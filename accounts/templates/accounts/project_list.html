@@ -1,0 +1,48 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Available Projects - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h2>Available Collaborative Projects</h2>
+    <h3>Work on real projects with peers, build your portfolio, and gain practical experience.</h3>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if approved_projects %}
+        <ul>
+            {% for project in approved_projects %}
+                <li>
+                    <h3>{{ project.title }}</h3>
+
+                    <p>{{ project.description }}</p>
+
+                    <p><strong>Required Skills:</strong>{{ project.required_skills }}</p>
+
+                    <p><strong>Team Size:</strong>
+                        {{ project.current_members }} /
+                        {{ project.max_members }}
+                    members</p>
+                    
+                    {% if user.is_authenticated and not project.user_is_member %}                      
+                        <a href="{% url 'accounts:join_project' project.id %}">Join Project</a>
+                    {% elif user.is_authenticated %}
+                        <a href="{% url 'accounts:project_detail' project.id %}">View Project</a>
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}">Log in to join</a>
+                    {% endif %}
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No approved projects are currently available. Check back later!</p>
+    {% endif %}
+        
+{% endblock %}

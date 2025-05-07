@@ -1,0 +1,15 @@
+{% extends 'accounts/base.html' %}
+
+{% block titl %}
+    Start a New Topic - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <p>Start a New Topic</p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Create Topic</button>
+        <button><a href="{% url 'forum:forum_topic_list' %}">Cancel</a></button>
+    </form>
+{% endblock %}

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CollaborateNow{% endblock %}</title>
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" 
+    integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+    <style>
+
+        :root {
+            --primary-color: #2563eb;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --accent-color: #3b82f6;
+        }
+        body {
+            font-family: sans-serif;
+            color: var(--dark-color);
+            line-height: 2;
+            margin: 20px;
+        }
+        nav a {
+            margin-right: 15px;
+            text-decoration: none;
+        }
+
+        .navbar .nav-link:hover {
+            color: var(--primary-color);
+            transition: color .3s ease;
+            transform: translateY(-3px);
+        }
+
+        .content {
+            margin-top: 20px;
+
+        }
+
+        footer {
+            background-color: darkslateblue ;
+            color: white;
+            /* margin: 0; */
+            padding: 3rem 0 2rem;
+            border-radius: 5%;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            text-decoration: none;
+            color: aliceblue;
+            margin: 0 1rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateY(3px);
+            color: var(--primary-color)
+        }
+
+        .social-icons {
+            font-size: 1.25rem;
+            margin: 0 0.75rem;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons:hover {
+            color: var(--accent-color);
+            transform: translateY(-3px);
+        }
+        
+
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+            <div class="container">
+                <a href="#" class="navbar-brand"><h1 class="h4 mb-0">CollaborateNow</h1></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link active" href="{% url 'home' %}">Home</a></li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:my_projects' %}">My Projects</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:project_list' %}">Find Projects</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'forum:forum_topic_list' %}">Forum</a></li>
+                        {% endif %}    
+                    </ul> 
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:profile' %}">Profile</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Logout</a></li>
+                        {% else %}
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:login' %}">Login</a></li>
+                            <li class="nav-item"><a class="nav-link" href="{% url 'accounts:register' %}">Register</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>    
+    </header>
+
+    <main>
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links mb-4">
+                <a href="#">Home</a>
+                <a href="#">Find Projects</a>
+                <a href="#">Contact</a>
+                <a href="#">About Us</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <div class="d-flex justify-content-center mb-4">
+                <a href="#" class="social-icons"><i class="bi bi-twitter"></i></a>
+                <a href="#" class="social-icons"><i class="bi bi-instagram"></i></a>
+                <a href="#" class="social-icons"><i class="bi bi-linkedin"></i></a>
+                <a href="#" class="social-icons"><i class="bi bi-github"></i></a>
+            </div>
+        </div>
+        <p class="copyright text-center mb-0">&copy; 2025 CollaborateNow. All rights reserved.</p>
+    </footer>
+    
+    <!-- Bootstrap CDN JavaScript-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js" 
+    integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq" crossorigin="anonymous"></script> 
+
+</body>
+</html>

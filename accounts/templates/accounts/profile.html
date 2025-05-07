@@ -1,0 +1,27 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Profile - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h2>My Profile</h2>
+    <p><strong>Username: </strong>{{ user.username }}</p>
+    <p><strong>Email: </strong>{{ user.email }}</p>
+    <p><strong>First Name: </strong>{{ user.first_name }}</p>
+    <p><strong>First Last: </strong>{{ user.last_name }}</p>
+    <p><strong>Account Created: </strong>{{ user.date_joined|date:"F j, Y, H:i" }}</p>
+    {% if profile.skills %}
+        <p><strong>Skills: </strong>{{ profile.skills }}</p>
+    {% endif %}
+    {% if profile.bio %}
+        <p><strong>About Me: </strong>{{ profile.bio }}</p>
+    {% endif %}
+    {% if profile.portfolio_url %}
+        <p><strong>Portfolio: </strong><a href="{{ profile.portfolio_url }}" target="_blank" rel="noopener noreferrer"></a>{{ profile.portfolio_url }}</p>
+    {% endif %}
+    {% if profile.experience_level %}
+        <p><strong>Experience Level: </strong>{{ profile.get_experience_level_display }}</p>
+    {% endif %}
+    <p><a href="{% url 'accounts:edit_profile' %}">Edit Profile</a></p>
+{% endblock %}

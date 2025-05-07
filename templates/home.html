@@ -1,0 +1,18 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Home - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h1>Welcome!</h1>
+    {% if user.is_authenticated %}
+        <p>
+            Hello! {{ user.username }}, You are logged in.
+            <a href="{% url 'accounts:logout' %}">Logout</a>
+        </p>
+    {% else %}
+        <p><a href="{% url 'accounts:login' %}">Login</a> or <a href="{% url 'accounts:register' %}">Sign up</a> to start collaborating!</p>
+    {% endif %}
+
+{% endblock %}

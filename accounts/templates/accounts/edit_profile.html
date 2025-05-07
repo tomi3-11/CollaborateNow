@@ -1,0 +1,15 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Edit Profile - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h2>Edit Profile</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+        <button><a href="{% url 'accounts:profile' %}">Cancel</a></button>
+    </form>
+{% endblock %}

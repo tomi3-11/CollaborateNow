@@ -1,0 +1,18 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    Confirm Delete - CollaborateNow
+{% endblock %}
+
+{% block content %}
+
+    <h2>Confirm Delete</h2>
+    <p>Are you sure you want to delete the following post(s)? </p>
+    <blockquote>{{ post.content| linebreaksbr }}</blockquote>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete.</button>
+        <button><a href="{% url 'forum:forum_topic_detail' post.topic.id %}">No, Cancel</a></button>
+    </form>
+
+{% endblock %}

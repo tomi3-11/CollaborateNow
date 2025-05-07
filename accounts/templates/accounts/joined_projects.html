@@ -1,0 +1,28 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    My Projects - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h2>My Projects</h2>
+    {% if joined_projects %}
+        <ul>
+            {% for project in joined_projects %}
+                <li>
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.description|truncatewords:30 }}</p>
+
+                    <p><strong>Team size:</strong>
+                    {{ project.current_members }} /
+                    {{ project.max_members}} members</p>
+
+                    <a href="{% url 'accounts:project_detail' project.id %}">View Details</a>
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You haven't joined any projects yet.</p>
+    {% endif %}
+{% endblock %}

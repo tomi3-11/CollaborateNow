@@ -1,0 +1,47 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    {{ topic.title }} - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h2>{{ topic.title }}</h2>
+    <p>Started by {{ topic.creator.username }} on {{ topic.created_at }}</p>
+    <hr>
+    <h3>Posts: </h3>
+    {% if posts %}
+        <ul>
+            {% for post in posts %}
+                <li>
+                    <strong>{{ post.author.username }}</strong> ({{ post.created_at }})                   
+                    {% if post.updated_at != post.created_at %}
+                        (Edited {{ post.updated_at }})
+                    {% endif %} 
+                    <br>
+                    {{ post.content|linebreaksbr }}
+                    {% if user.is_authenticated and user == post.author %}
+                        <button><a href="{% url 'forum:edit_post' post.id %}">Edit</a></button>
+                        <button><a href="{% url 'forum:delete_post' post.id %}" onclick="return 
+                        confirm('Are you sure you want to delete this post?')">Delete</a></button>
+                    {% elif user.is_authenticated and user.is_staff %}
+                        <button><a href="{% url 'forum:delete_post' post.id %}" onclick="return 
+                        confirm('Are you sure you want to delete this post? (Admin)')">Delete (Admin)</a></button>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No posts in this topic yet. Be the first to reply.</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        <h3>Reply to this topic: </h3>
+        <form method="post" action="{% url 'forum:create_post' topic.id %}">
+            {% csrf_token %}
+            {{ post_form.as_p }}
+            <button type="submit">Post Reply</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'accounts:login' %}">Log in</a> to reply to this topic.</p>
+    {% endif %}
+{% endblock %} 

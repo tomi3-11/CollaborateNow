@@ -1,0 +1,77 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+    {{ project.title }} - Project Details
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ project.title }}</h2>
+
+    <section>
+        <h3>Members</h3>
+        <ul>
+            {% for member in Members %}
+                <li>
+                    <a href="{% url 'accounts:profile' %}">{{ member.user.username }}</a>
+                </li>
+            {% empty %}
+                <li>No members yet.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
+    <h3>Project Details</h3>
+        {% if project.objectives %}
+            <p><strong>Objectives: </strong>{{ project.objectives|linebreaksbr }}</p>
+        {% endif %}
+
+        {% if project.rules %}
+            <p><strong>Rules: </strong>{{ project.rules|linebreaksbr }}</p>
+        {% endif %}
+
+        {% if project.goals %}
+            <p><strong>Goals: </strong>{{ project.goals|linebreaksbr }}</p>
+        {% endif %}
+
+        {% if project.start_time %}
+            <p><strong>Start Time: </strong>{{ project.start_time }}</p>
+        {% endif %}
+
+        {% if project.operation_days %}
+            <p><strong>Operation Days: </strong>{{ project.operation_days }}</p>
+        {% endif %}
+
+        {% if project.deadline %}
+            <p><strong>Deadline: </strong>{{ project.deadline }}</p>
+        {% endif %}
+
+        {% if project.action %}
+            <p><strong>Status: </strong>{{ project.action }}</p>
+        {% endif %}
+
+        {% if project.project_type %}
+            <p><strong>Project type: </strong>{{ project.project_type }}</p>
+        {% endif %}
+
+        {% if project.visibility %}
+            <p><strong>Visibility: </strong>{{ project.visibility }}</p>
+        {% endif %}
+
+        {% if project.location %}
+            <p><strong>Location: </strong>{{ project.location }}</p>
+        {% endif %}
+    </section>
+
+    <section>
+        <h3>Chat</h3>
+        <p>Chat functionality Coming Sonn...</p>
+    </section>
+
+    <section>
+        <h3>Whiteboard</h3>
+        <p>Collaborative Whiteboard/editor Coming Soon...</p>
+    </section>
+    
+{% endblock %}

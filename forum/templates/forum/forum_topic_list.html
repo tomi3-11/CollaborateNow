@@ -1,0 +1,37 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}
+Community Forum - CollaborateNow
+{% endblock %}
+
+{% block content %}
+    <h2>Community Forum</h2>
+    <form action="{% url 'forum:forum_search' %}" method="get">
+        <input type="text" name="q" placeholder="Search topics...">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+    {% if user.is_authenticated %}
+        <p><a href="{% url 'forum:create_topic' %}">Start a New Topic</a></p>
+    {% else %}
+        <p>Please <a href="{% url 'accounts:login' %}">Log in</a> to start a new topic to participate in discussions.</p>
+    {% endif %}
+    {% if topics %}
+        <ul>
+            {% for topic in topics %}
+                <li>
+                    <a href="{% url 'forum:forum_topic_detail' topic.id %}">{{ topic.title }}</a>
+                    {% if topic.category %}
+                        (Category: {{ topic.category.name }})
+                    {% endif %}
+                    (Created by {{ topic.creator.username }} on {{ topic.created_at|date:"F j, Y, H:i" }}) -
+                    Last Active: {{ topic.last_active|date:"F j, Y, H:i" }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif search_term %}
+        <p>No topics found mactching you search term "{{ search_term }}".</p>
+    {% else %}
+        <p>No topics have been created yet.</p>
+    {% endif %}
+{% endblock %}
