@@ -4,7 +4,7 @@ __pycache__/
 *$py.class
 
 
-CNenv
+CNenv/
 db.sqlite3
 
 # C extensions
