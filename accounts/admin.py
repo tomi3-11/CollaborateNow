@@ -1,11 +1,12 @@
 from django.contrib import admin
-from .models import Project, ProjectMembership, UserProfile
+from .models import Project, ProjectMembership, UserProfile, ProjectRequiredSkill
 
 # Register your models here.
 
 #admin.site.register(Project)
 admin.site.register(ProjectMembership)
 admin.site.register(UserProfile)
+admin.site.register(ProjectRequiredSkill)
 
 
 class ProjectAdmin(admin.ModelAdmin):

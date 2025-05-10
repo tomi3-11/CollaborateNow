@@ -1,6 +1,7 @@
 from django import forms
+from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Project, UserProfile
+from .models import Project, UserProfile, ProjectRequiredSkill
 
 class RegistrationForm(UserCreationForm):
     class Meta:
@@ -34,6 +35,8 @@ class ProjectCreationForm(forms.ModelForm):
         widgets = {
             'description': forms.Textarea(attrs={'rows': 5}),
             'required skills': forms.Textarea(attrs={'rows': 3}),
+            'objectives': forms.Textarea(attrs={'rows': 3}),
+            'goals': forms.Textarea(attrs={'row': 3}),
         }
 
     
@@ -59,7 +62,16 @@ class ProjectCreationForm(forms.ModelForm):
         if min_members is not None and max_members is not None and min_members > max_members:
             raise forms.ValidationError("Minimum team size cannot be greater than maximum team size.")
         return cleaned_data
-    
+
+
+ProjectRequiredSkillFormSet = inlineformset_factory(
+    Project,
+    ProjectRequiredSkill,
+    fields = ('skill', 'proficiency_level'),
+    extra=3, # Number of initial empty forms
+    can_delete = True
+)
+
 
 class UserProfileForm(forms.ModelForm):
     class Meta:

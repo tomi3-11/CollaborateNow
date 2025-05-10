@@ -23,7 +23,13 @@
 
                     <p>{{ project.description }}</p>
 
-                    <p><strong>Required Skills:</strong>{{ project.required_skills }}</p>
+                    <p><strong>Required Skills:</strong>
+                        {% for req_skill in project.required_skills_details.all %}
+                            {{ req_skill.skill.name }} ({% if not forloop.last %}/{% endif %})
+                        {% empty %}
+                            Any
+                        {% endfor %}
+                    </p>
 
                     <p><strong>Team Size:</strong>
                         {{ project.current_members }} /

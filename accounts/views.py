@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm
+from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet
 from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectMembership, UserProfile
 from django.contrib.auth.models import User
@@ -45,16 +45,22 @@ def logout_view(request):
 @login_required
 def create_project(request):
     if request.method == 'POST':
-        form = ProjectCreationForm(request.POST)
-        if form.is_valid():
-            project = form.save(commit=False)
+        project_form = ProjectCreationForm(request.POST)
+        required_skills_formset = ProjectRequiredSkillFormSet(request.POST)
+        if project_form.is_valid():
+            project = project_form.save(commit=False)
             project.creator = request.user
             project.save()
+
+            required_skills_formset.instance = project
+            required_skills_formset.save()
+
             return redirect('accounts:project_submitted') # Redirect to a page indicating project submission success
     else:
-        form = ProjectCreationForm()
+        project_form = ProjectCreationForm()
+        required_skills_formset = ProjectRequiredSkillFormSet()
 
-    context = {'form': form}
+    context = {'project_form': project_form, 'required_skills_formset': required_skills_formset}
     return render(request, 'accounts/create_project.html', context)
 
 

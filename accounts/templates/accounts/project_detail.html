@@ -65,6 +65,17 @@
     </section>
 
     <section>
+        <h3>Required Skills</h3>
+        <ul>
+            {% for req_skill in project.required_skills_details.all %}
+                <li>{{ req_skill.get_proficiency_level_display }}</li>
+            {% empty %}
+                <li>No specific skill mentioned.</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <section>
         <h3>Chat</h3>
         <p>Chat functionality Coming Sonn...</p>
     </section>
