@@ -1,4 +1,6 @@
 {% extends 'accounts/base.html' %}
+{% load humanize %}
+{% load custom_filters %}
 
 {% block title %}
     {{ topic.title }} - CollaborateNow
@@ -13,9 +15,9 @@
         <ul>
             {% for post in posts %}
                 <li>
-                    <strong>{{ post.author.username }}</strong> ({{ post.created_at }})                   
+                    <strong>{{ post.author.username }}</strong> ({{ post.created_at|clean_naturaltime }})                   
                     {% if post.updated_at != post.created_at %}
-                        (Edited {{ post.updated_at }})
+                        (Edited {{ post.updated_at|clean_naturaltime }})
                     {% endif %} 
                     <br>
                     {{ post.content|linebreaksbr }}

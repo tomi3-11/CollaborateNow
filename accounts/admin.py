@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, ProjectMembership, UserProfile, ProjectRequiredSkill
+from .models import Project, ProjectMembership, UserProfile, ProjectRequiredSkill, Skill
 
 # Register your models here.
 
@@ -7,6 +7,12 @@ from .models import Project, ProjectMembership, UserProfile, ProjectRequiredSkil
 admin.site.register(ProjectMembership)
 admin.site.register(UserProfile)
 admin.site.register(ProjectRequiredSkill)
+
+admin.site.register(Skill)
+
+class ProjectSkillRequiredInline(admin.TabularInline):
+    model = ProjectRequiredSkill
+    extra = 1
 
 
 class ProjectAdmin(admin.ModelAdmin):

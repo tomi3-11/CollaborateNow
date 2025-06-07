@@ -81,4 +81,71 @@ class UserProfileForm(forms.ModelForm):
             'skills': forms.Textarea(attrs={'rows': 2}),
             'bio': forms.Textarea(attrs={'rows': 5}),
         }
+
+
+class CreateProjectStep1Form(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = [
+            'title',
+            'description',
+            'min_members',
+            'max_members'
+        ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 5})
+        }
+
+    def clean_min_members(self):
+        min_members = self.cleaned_data['min_members']
+        if min_members < 4:
+            raise forms.ValidationError("Minimum team size must be atleast 4.")
+        return min_members
+    
+    def clean_max_members(self):
+        max_members = self.cleaned_data['max_members']
+        if max_members > 7:
+            raise forms.ValidationError("Maximum team size cannot exceed 7.")
+        return max_members
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        min_members = cleaned_data.get('min_members')
+        max_members = cleaned_data.get('max_members')
+
+        if min_members is not None and max_members is not None and min_members > max_members:
+            raise forms.ValidationError("Minimun team size cannot be greater than the maximum team size.")
+        
+        return cleaned_data
+    
+
+ProjectRequiredSkillFormSet = inlineformset_factory(
+    Project,
+    ProjectRequiredSkill,
+    fields=('skill', 'proficiency_level'),
+    extra=3,
+    can_delete=True
+)
+
+
+class CreateProjectStep2Form(forms.ModelForm):
+    pass # We'll handle the required skills with the formset in the view
+
+
+class CreateProjectStep3Form(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = [
+            'objectives',
+            'rules',
+            'goals',
+            'start_time',
+            'operation_days',
+            'deadline',
+        ]
+        widgets = {
+            'objectives': forms.Textarea(attrs={'rows': 3}),
+            'rules': forms.Textarea(attrs={'rows': 3}),
+            'goals': forms.Textarea(attrs={'rows': 3}),
+        }
     

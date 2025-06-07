@@ -10,7 +10,7 @@
     <p><strong>Email: </strong>{{ user.email }}</p>
     <p><strong>First Name: </strong>{{ user.first_name }}</p>
     <p><strong>First Last: </strong>{{ user.last_name }}</p>
-    <p><strong>Account Created: </strong>{{ user.date_joined|date:"F j, Y, H:i" }}</p>
+    <p><strong>Account Created: </strong>{{ user.date_joined|date:"F j, Y" }}</p>
     {% if profile.skills %}
         <p><strong>Skills: </strong>{{ profile.skills }}</p>
     {% endif %}

@@ -1,4 +1,5 @@
 {% extends 'accounts/base.html' %}
+{% load humanize %}
 
 {% block title %}
 Community Forum - CollaborateNow
@@ -25,7 +26,7 @@ Community Forum - CollaborateNow
                         (Category: {{ topic.category.name }})
                     {% endif %}
                     (Created by {{ topic.creator.username }} on {{ topic.created_at|date:"F j, Y, H:i" }}) -
-                    Last Active: {{ topic.last_active|date:"F j, Y, H:i" }}
+                    Last Active: {{ topic.last_active|naturaltime }}
                 </li>
             {% endfor %}
         </ul>
