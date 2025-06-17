@@ -137,7 +137,7 @@ class CreateProjectStep3Form(forms.ModelForm):
         model = Project
         fields = [
             'objectives',
-            'rules',
+            #'rules',
             'goals',
             'start_time',
             'operation_days',
