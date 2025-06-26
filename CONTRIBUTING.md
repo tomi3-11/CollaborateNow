@@ -32,7 +32,7 @@ Please open a new issue on our [GitHub Issues page](https://github.com/your-gith
 
 If you have an idea for a new feature or enhancement, please:
 
-1.  **Check Existing Issues:** Before submitting a new feature request, please check if a similar suggestion already exists on our [GitHub Issues page](https://github.com/your-github-username/your-repo-name/issues).
+1.  **Check Existing Issues:** Before submitting a new feature request, please check if a similar suggestion already exists on our [GitHub Issues page](https://github.com/tomi3-11/CollaborateNow/issues).
 2.  **Open a New Issue:** If your suggestion is new, open a new issue with a clear and descriptive title.
 3.  **Describe Your Feature:** Clearly explain the proposed feature, its purpose, and how it would benefit the project. Include any potential use cases or mockups if they help illustrate your idea.
 
@@ -72,18 +72,8 @@ If you want to contribute to the documentation:
 
 ## Code of Conduct
 
-Please note that this project has a [Code of Conduct](https://www.google.com/search?q=CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms.
+Please note that this project has a [Code of Conduct](https://github.com/tomi3-11/CollaborateNow/blob/main/CONTRIBUTING.md). By participating in this project, you agree to abide by its terms.
 
 ## Thank You
 
 Your contributions play a vital role in making the Collaborative Team Platform a better tool for everyone. Thank you for your time and effort!
-
----
-
-**Remember to replace:**
-
-* `https://github.com/your-github-username/your-repo-name/issues` with the actual link to your repository's issues page.
-* `https://www.google.com/search?q=CODE_OF_CONDUCT.md` with the actual link to your Code of Conduct file if you have one. If not, you can remove that line.
-* Update the branch name (`main`) if your primary development branch has a different name (e.g., `develop`).
-
-This `CONTRIBUTING.md` provides clear guidelines for potential contributors and helps ensure a smooth and collaborative development process. Make sure this file exists in the root of your repository.
