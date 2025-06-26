@@ -72,7 +72,7 @@ If you want to contribute to the documentation:
 
 ## Code of Conduct
 
-Please note that this project has a [Code of Conduct](https://github.com/tomi3-11/CollaborateNow/blob/main/CONTRIBUTING.md). By participating in this project, you agree to abide by its terms.
+Please note that this project has a [Code of Conduct](https://github.com/tomi3-11/CollaborateNow/blob/main/CODE_OF_CONDUCT.md). By participating in this project, you agree to abide by its terms.
 
 ## Thank You
 
