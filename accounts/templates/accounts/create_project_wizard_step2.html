@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Create Project - Step 2{% endblock %}
+
+{% block content %}
+
+    <h2>Create a New Project - Step2 of {{ total_steps }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <h3>Required Skills</h3>
+        {{ formset.management_form }}
+        {% for form in formset %}
+            <div class="inline-form">
+                {{ form.as_p }}
+            </div>
+        {% endfor %}
+        <button type="submit">Next</button>
+        <a href="{% url 'accounts:create_project_wizard_step1' %}">Previous</a>
+    </form>
+
+    <style>
+        .inline-form {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+
+{% endblock %}

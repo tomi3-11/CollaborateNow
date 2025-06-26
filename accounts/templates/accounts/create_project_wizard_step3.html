@@ -1,0 +1,33 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Create Project - Step 3{% endblock %}
+
+{% block content %}
+  <h2>Create a New Project - Step 3 of {{ total_steps }}</h2>
+
+  <form method="post">
+    {% csrf_token %}
+
+    {% if form.non_field_errors %}
+      <div style="color: red;">
+        {{ form.non_field_errors }}
+      </div>
+    {% endif %}
+
+    {% for field in form %}
+      <div style="margin-bottom: 15px;">
+        {{ field.label_tag }}
+        {{ field }}
+        {% if field.help_text %}
+          <small style="color: #666;">{{ field.help_text }}</small>
+        {% endif %}
+        {% if field.errors %}
+          <div style="color: red;">{{ field.errors }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+
+    <button type="submit">✅ Submit Project</button>
+    <a href="{% url 'accounts:create_project_wizard_step2' %}">⬅️ Previous</a>
+  </form>
+{% endblock %}

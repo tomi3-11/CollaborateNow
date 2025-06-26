@@ -128,7 +128,7 @@ ProjectRequiredSkillFormSet = inlineformset_factory(
 )
 
 
-class CreateProjectStep2Form(forms.ModelForm):
+class CreateProjectStep2Form(forms.Form):
     pass # We'll handle the required skills with the formset in the view
 
 
@@ -137,7 +137,6 @@ class CreateProjectStep3Form(forms.ModelForm):
         model = Project
         fields = [
             'objectives',
-            #'rules',
             'goals',
             'start_time',
             'operation_days',
@@ -145,7 +144,10 @@ class CreateProjectStep3Form(forms.ModelForm):
         ]
         widgets = {
             'objectives': forms.Textarea(attrs={'rows': 3}),
-            'rules': forms.Textarea(attrs={'rows': 3}),
             'goals': forms.Textarea(attrs={'rows': 3}),
+            'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
+            'deadline': forms.DateInput(attrs={'type': 'date'}, format="%Y-%m-%d"),
         }
+        
+    
     

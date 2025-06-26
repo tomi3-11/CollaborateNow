@@ -1,0 +1,14 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Create Project - Step 1{% endblock %}
+
+{% block content %}
+
+    <h2>Create a New Project - Step 1 of {{ total_steps }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Next</button>
+    </form>
+
+{% endblock %}
