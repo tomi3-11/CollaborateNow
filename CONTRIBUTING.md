@@ -1,4 +1,4 @@
-# Contributing to Collaborative Team Platform
+# Contributing to CollaborativeNow Platform
 
 We warmly welcome contributions to the CollaborateNow project! Whether you're looking to report a bug, suggest a new feature, improve the documentation, or submit code changes, your help is highly appreciated.
 
@@ -26,7 +26,7 @@ When reporting a bug, please include the following information:
 * **Screenshots (if applicable):** Visual evidence can often be very helpful.
 * **Error Messages (if applicable):** Include any error messages you received.
 
-Please open a new issue on our [GitHub Issues page](https://github.com/your-github-username/your-repo-name/issues) with a clear and descriptive title.
+Please open a new issue on our [GitHub Issues page](https://github.com/tomi3-11/CollaborateNow/issues) with a clear and descriptive title.
 
 ## Suggesting Features
 
@@ -76,4 +76,4 @@ Please note that this project has a [Code of Conduct](https://github.com/tomi3-1
 
 ## Thank You
 
-Your contributions play a vital role in making the Collaborative Team Platform a better tool for everyone. Thank you for your time and effort!
+Your contributions play a vital role in making the CollaborativeNow a better tool for everyone. Thank you for your time and effort!
