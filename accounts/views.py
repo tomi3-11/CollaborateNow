@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet
+from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet, CreateProjectStep1Form, CreateProjectStep2Form, CreateProjectStep3Form
 from django.contrib.auth.decorators import login_required
-from .models import Project, ProjectMembership, UserProfile
+from .models import Project, ProjectMembership, UserProfile, Skill, ProjectRequiredSkill
 from django.contrib.auth.models import User
 from django.contrib import messages
 
@@ -165,3 +165,96 @@ def project_detail(request, project_id):
     context = {'project': project, 'members': members, 'is_member': is_member}
     return render(request, 'accounts/project_detail.html', context)
 
+
+@login_required
+def create_project_wizard_step1(request):
+    if request.method == "POST":
+        form = CreateProjectStep1Form(request.POST)
+        if form.is_valid():
+            request.session['project_step1_data'] = form.cleaned_data
+            return redirect('accounts:create_project_wizard_step2')
+    else:
+        form = CreateProjectStep1Form(request.session.get('project_step1_data'))
+        context = {
+            'form': form,
+            'step': 1,
+            'total_steps': 3
+        }
+        return render(request, 'accounts/create_project_wizard_step1.html', context)
+    
+    
+@login_required
+def create_project_wizard_step2(request):
+    if request.method == "POST":
+        formset = ProjectRequiredSkillFormSet(request.POST)
+        if formset.is_valid():
+            request.session['project_step2_data'] = []
+            for form in formset:
+                if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
+                    request.session['project_step2_data'].append(form.cleaned_data)
+                    return redirect('create_project_wizard_step3')
+    else:
+         formset = ProjectRequiredSkillFormSet()
+         if 'project_step2_data' in request.session:
+             formset = ProjectRequiredSkillFormSet(initial=request.session['project_step2_data'])
+             
+    context = [
+        'formset': formset,
+        'step': 2,
+        'total_steps': 3
+    ]
+    return render(request, 'accounts/create_project_wizard_step2.html', context)           
+
+
+@login_required
+def create_project_wizard_step3(request):
+    if request.method == "POST":
+        form = CreateProjectStep3Form(request.POST)
+        if form.is_valid():
+            request.session['project_step3_data'] = form.cleaned_data
+            return redirect('accounts:create_project_wizard_submit')
+    else:
+        form = CreateProjectStep3Form(request.session.get('project_step3_data'))
+        
+    context = {
+        'form': form,
+        'step': 3,
+        'total_steps': 3
+    }
+    return render(request, 'accounts/create_project_wizard_step3.html', context)
+
+
+@login_required
+def create_project_wizard_submit(request):
+    step1_data = request.session.get('project_step1_data')
+    step2_data = request.session.get('project_step2_data')
+    step3_data = request.session.get('project_step3_data')
+    
+    if step1_data and step2_data and step3_data:
+        project = Project.objects.create(
+            creator=request.user,
+            title=step1_data['title'],
+            description=step1_data['description'],
+            min_members=step1_data['min_members'],
+            max_members=step1_data['max_members'],
+            objectives=step3_data.get('objectives', ''),
+            goals=step3_data.get('goals', ''),
+            start_time=step3_data.get('start_time',),
+            operation_days=step3_data.get('operation_days', ''),
+            deadline=step3_data.get('deadline'),
+        )
+        for skill_data in step2_data:
+            skill, created = Skill.objects.get_or_create(name=skill_data['skill'])
+            ProjectRequiredSkill.objects.create(project=project, skill=skill, proficiency_level=skill_data['proficiency_level'])
+            
+            # Clear the wizard data fromt the session
+        del request.session['project_step1_data']
+        del request.session['project_step2_data']
+        del request.session['project_step3_data']
+            
+        return redirect('accounts:project_submitted')
+    else:
+        # Handle cases where the user might have skipped steps
+        messages.error(request, "There was an error submitting your project. Please try again.")
+        
+        return redirect('accounts:create_project_step1')  
