@@ -159,16 +159,6 @@ def edit_profile(request):
 
 @login_required
 def project_detail(request, project_id):
-    # project = get_object_or_404(Project, id=project_id)
-    # is_member = ProjectMembership.objects.filter(user=request.user, project=project).exists()
-    # if not is_member and not request.user.is_staff and project.creator != request.user:
-    #     messages.error(request, "You do not have permission to access this projects page.")
-    #     return redirect("accounts:project_list")
-    
-    # members = ProjectMembership.objects.filter(project=project).select_related('user_profile') # Efficiently fetch user profiles.
-    # context = {'project': project, 'members': members, 'is_member': is_member}
-    # return render(request, 'accounts/project_detail.html', context)
-
     project = get_object_or_404(Project, id=project_id)
     members = project.projectmembership_set.all()
     
