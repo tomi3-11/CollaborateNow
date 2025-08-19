@@ -53,7 +53,7 @@ class Project(models.Model):
 class ProjectMembership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    joined_at = models.DateTimeField(auto_now_add=True)
+    joined_date = models.DateTimeField(auto_now_add=True) # Tracks date a member joins a project
 
     class Meta:
         unique_together = ('user', 'project') # Ensure a user can't join the same project mulriple times.

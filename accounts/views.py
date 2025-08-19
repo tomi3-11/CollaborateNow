@@ -159,15 +159,29 @@ def edit_profile(request):
 
 @login_required
 def project_detail(request, project_id):
-    project = get_object_or_404(Project, id=project_id)
-    is_member = ProjectMembership.objects.filter(user=request.user, project=project).exists()
-    if not is_member and not request.user.is_staff and project.creator != request.user:
-        messages.error(request, "You do not have permission to access this projects page.")
-        return redirect("accounts:project_list")
+    # project = get_object_or_404(Project, id=project_id)
+    # is_member = ProjectMembership.objects.filter(user=request.user, project=project).exists()
+    # if not is_member and not request.user.is_staff and project.creator != request.user:
+    #     messages.error(request, "You do not have permission to access this projects page.")
+    #     return redirect("accounts:project_list")
     
-    members = ProjectMembership.objects.filter(project=project).select_related('user_profile') # Efficiently fetch user profiles.
-    context = {'project': project, 'members': members, 'is_member': is_member}
-    return render(request, 'accounts/project_detail.html', context)
+    # members = ProjectMembership.objects.filter(project=project).select_related('user_profile') # Efficiently fetch user profiles.
+    # context = {'project': project, 'members': members, 'is_member': is_member}
+    # return render(request, 'accounts/project_detail.html', context)
+
+    project = get_object_or_404(Project, id=project_id)
+    members = project.projectmembership_set.all()
+    
+    is_member = False
+    if request.user.is_authenticated:
+        is_member = project.projectmembership_set.filter(user=request.user).exists()
+        
+    context = {
+        'project': project,
+        "Members":  members,
+        "is_member": is_member,
+    }
+    return render(request, "accounts/project_detail.html", context)
 
 
 @login_required
@@ -309,3 +323,18 @@ def create_project_wizard_submit(request):
 
     messages.error(request, "There was an error submitting your project. Please try again.")
     return redirect('accounts:create_project_wizard_step1')
+
+
+@login_required
+def leave_project(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    try:
+        membership = ProjectMembership.objects.get(user=request.user, project=project)
+        membership.delete()
+        project.current_members = max(0, project.current_members - 1) # Ensure count doesn't go below zero
+        project.save()
+        messages.success(request, f"You have successfully left the project '{project.title}.")
+        return redirect('accounts:project_detail', project_id=project_id)
+    except ProjectMembership.DoesNotExist:
+        messages.error(request, "You are not a member of this project.")
+        return redirect('accounts:project_detail', project_id=project_id)
