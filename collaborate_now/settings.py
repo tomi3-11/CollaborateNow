@@ -76,6 +76,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'collaborate_now.wsgi.application'
 
+ASGI_APPLICATION = "collaborate_now.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayers",
+    }
+}
+
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
