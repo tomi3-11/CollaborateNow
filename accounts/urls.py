@@ -20,4 +20,5 @@ urlpatterns = [
     path('my_projects/', views.joined_projects, name='my_projects'),
     path('profile/', views.profile, name='profile'),
     path('profile/edit/', views.edit_profile, name='edit_profile'),
+    path('notifications/mark_all_read/', views.mark_all_read, name='mark_all_read'),
 ]

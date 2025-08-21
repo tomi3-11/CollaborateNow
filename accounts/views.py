@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime, parse_date
 from datetime import datetime
-from .models import Skill
+from .models import Skill, Notification
 
 
 # Create your views here.
@@ -92,6 +92,16 @@ def project_list(request):
 def join_project(request, project_id):
     project = get_object_or_404(Project, id=project_id)
     
+    # Checks if a user is a member
+    # if project.projectmembership_set.filter(user=request.user, project=project).exist():
+    #     messages.info(request, "You are already a member of this project.")
+    #     return redirect('accounts:project_detail', project_id=project_id)
+    
+    # Informs user if project reaches maximum number of members of FULL
+    if project.current_members >= project.max_members:
+        messages.error(request, "This project is full.")
+        return redirect('accounts:project_list')
+    
     # Check if the user is already a member
     if ProjectMembership.objects.filter(user=request.user, project=project).exists():
         messages.error(request, f"You are already a member of '{project.title}'.")
@@ -105,7 +115,17 @@ def join_project(request, project_id):
     project.save()
 
     messages.success(request, f"You have successfully joined '{project.title}")
-    return redirect('accounts:project_list')
+    # return redirect('accounts:project_list')
+
+    # Create a notification for the project creator
+    if request.user != project.creator:
+        Notification.objects.create(
+            user=project.creator,
+            notification_type='new_member',
+            message=f"{request.user.username} has joined your project '{project.title}'."
+        )
+    
+    return redirect('accounts:project_detail', project_id=project_id)
 
 
 @login_required
@@ -328,3 +348,9 @@ def leave_project(request, project_id):
     except ProjectMembership.DoesNotExist:
         messages.error(request, "You are not a member of this project.")
         return redirect('accounts:project_detail', project_id=project_id)
+    
+    
+@login_required
+def mark_all_read(request):
+    Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
+    return redirect('accounts:profile') # redirect to profile 

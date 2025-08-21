@@ -56,7 +56,7 @@ class ProjectMembership(models.Model):
     joined_date = models.DateTimeField(auto_now_add=True) # Tracks date a member joins a project
 
     class Meta:
-        unique_together = ('user', 'project') # Ensure a user can't join the same project mulriple times.
+        unique_together = ('user', 'project') # Ensure a user can't join the same project multiple times.
 
 
     def __str__(self):
@@ -111,3 +111,14 @@ class ProjectRequiredSkill(models.Model):
 
         def __str__(self):
             return f"{self.skill.name}({self.proficiency_level}) for {self.project.title}"
+        
+
+class Notification(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notification_type = models.CharField(max_length=50) # e.g., 'project_approved', 'new_member'
+    message = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.notification_type}"

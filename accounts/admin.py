@@ -6,7 +6,7 @@ from django.forms import BaseInlineFormSet
 # Register your models here.
 
 #admin.site.register(Project)
-admin.site.register(ProjectMembership)
+# admin.site.register(ProjectMembership)
 admin.site.register(UserProfile)
 admin.site.register(ProjectRequiredSkill)
 
