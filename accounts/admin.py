@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, ProjectMembership, UserProfile, ProjectRequiredSkill, Skill
+from .models import Project, ProjectMembership, UserProfile, ProjectRequiredSkill, Skill, Notification
 from django.core.exceptions import ValidationError
 from django.forms import BaseInlineFormSet
 
@@ -32,8 +32,21 @@ class ProjectAdmin(admin.ModelAdmin):
     readonly_fields = ('current_members',) # Making the current_members read-only
 
     def approve_projects(self, request, queryset):
-        queryset.update(status='approved')
-        self.message_user(request, f'{queryset.count()} project(s) approved.')
+        for project in queryset:
+            if project.status != "approved":
+                project.status = 'approved'
+                project.save()
+                self.message_user(request, f'Project "{project.title}" approved.')
+                # create a notification for the project creator
+                Notification.objects.create(
+                    user=project.creator,
+                    notification_type='project_approved',
+                    message=f"Your project '{project.title}' has been approved!",
+                )
+        else:
+            self.message_user(request, f'Project "{project.title}" is already approved.', level='WARNING')
+        # queryset.update(status='approved')
+        # self.message_user(request, f'{queryset.count()} project(s) approved.')
 
     approve_projects.short_description = "Approved selected projects."
 
