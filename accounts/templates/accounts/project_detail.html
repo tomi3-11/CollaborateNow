@@ -1,3 +1,4 @@
+
 {% extends 'accounts/base.html' %}
 
 {% block title %}
@@ -89,6 +90,10 @@
 
     <section>
         <h3>Chat</h3>
+        <div id="chat-log">
+        </div>
+            <input type="text" id="chat-message-input">
+            <button id="chat-message-submit">Send</button>
         <p>Chat functionality Coming Sonn...</p>
     </section>
 
@@ -96,5 +101,36 @@
         <h3>Whiteboard</h3>
         <p>Collaborative Whiteboard/editor Coming Soon...</p>
     </section>
+
+    <script>
+        const project_id = {{ project.id }};
+        const chatSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/project/'
+            + project_id
+            + '/'
+        );
+
+        chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            document.querySelector('#chat-log').innerHTML += (`<div><strong>${data.user}</strong>: ${data.message}</div>`);
+        };
+
+        chatSocket.onclose = function(e) {
+            console.error("Chat socket closed unexpectedly");
+        };
+
+        document.querySelector('#chat-message-submit').onclick = function(e) {
+            const messageInputDom = document.querySelector('#chat-message-input');
+            const message = messageInputDom.ariaValueMax;
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInputDom.value = '';
+        };
+    </script>
+
     
 {% endblock %}
+

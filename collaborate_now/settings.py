@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     # My apps
     'accounts',
     'forum',
+    "channels",
 
     'django.contrib.admin',
     'django.contrib.auth',
