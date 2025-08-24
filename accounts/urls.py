@@ -22,4 +22,5 @@ urlpatterns = [
     path('profile/edit/', views.edit_profile, name='edit_profile'),
     path('notifications/mark_all_read/', views.mark_all_read, name='mark_all_read'),
     path('projects/<int:project_id>/whiteboard/save/', views.save_whiteboard, name='save_whiteboard'),
+    path('projects/render_whiteboard/', views.render_whiteboard_content, name='render_whiteboard_content'),
 ]

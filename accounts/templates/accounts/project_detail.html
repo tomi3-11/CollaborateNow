@@ -107,6 +107,12 @@
         <!-- <p>Collaborative Whiteboard/editor Coming Soon...</p> -->
     </section>
 
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script>hljs.highlightAll();</script>
+
+
     <script>
 
         // Chat functionality with WebSocket
@@ -162,12 +168,32 @@
             renderedContent = renderedContent.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
 
             whiteboardDisplay.innerHTML = renderedContent;
+
+            
+            // Markdown rendering using markdown2 (server-side)
+            fetch('/projects/render_whiteboard/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ 'content': content }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.rendered_content) {
+                    whiteboardDisplay.innerHTML = data.rendered_content;
+                    hljs.highlightAll(); // Apply syntax highlighting after rendering 
+                } else {
+                    whiteboardDisplay.innerHTML = '<p>Error rendering content.</p>'; 
+                }
+            });
         }
 
         renderWhiteboardContent(whiteboardContent.value);
 
         whiteboardContent.addEventListener('input', function() {
-            renderWhiteboardContent(this.value); // Real-time preview as you type 
+            renderWhiteboardContent(this.value); // Real-time preview (now via server-side rendering)
         });
 
         saveWhiteboardButton.onclick = function() {
