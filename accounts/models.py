@@ -122,3 +122,12 @@ class Notification(models.Model):
     
     def __str__(self):
         return f"Notification for {self.user.username}: {self.notification_type}"
+    
+    
+class Whiteboard(models.Model):
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='whiteboard')
+    content = models.TextField(blank=True)
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"Whiteboard for {self.project.title}"
