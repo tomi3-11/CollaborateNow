@@ -123,7 +123,7 @@
             + window.location.host
             + '/ws/project/'
             + project_id
-            + '/'
+            + '/chat/'
         );
 
         chatSocket.onmessage = function(e) {
@@ -146,6 +146,15 @@
 
 
         // Whiteboard functionality
+
+        const whiteboardSocket = new WebSocket(
+            'ws://'
+            + window.location.host
+            + '/ws/project/'
+            + project_id
+            + '/whiteboard/'
+        );
+
 
         const whiteboardContent = document.querySelector('#whiteboard-content');
         const saveWhiteboardButton = document.querySelector('#save-whiteboard');
@@ -193,8 +202,24 @@
         renderWhiteboardContent(whiteboardContent.value);
 
         whiteboardContent.addEventListener('input', function() {
-            renderWhiteboardContent(this.value); // Real-time preview (now via server-side rendering)
+            // renderWhiteboardContent(this.value); // Real-time preview (now via server-side rendering)
+            const content = this.value;
+            whiteboardSocket.send(JSON.stringify({
+                'content': content
+            }));
+            // We no longer re-render locally on input; the broadcasted update will handle it
         });
+
+        whiteboardSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            whiteboardContent.value = data.content; // Update the textarea 
+            renderWhiteboardContent(data.content); // Re-render the display 
+            console.log(`Whiteboard updated by ${data.user}`);
+        };
+
+        whiteboardSocket.onclose = function(e) {
+            console.error('Whiteboard socket closed unexpectedly');
+        };
 
         saveWhiteboardButton.onclick = function() {
             const content = whiteboardContent.value;
@@ -216,6 +241,9 @@
                 }
             });
         };
+
+
+
 
 
 

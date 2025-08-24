@@ -18,8 +18,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "collaborate_now.settings")
 
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-from django.urls import re_path
-from accounts.consumers import ChatConsumer 
+from django.urls import re_path, path
+from accounts.consumers import ChatConsumer, WhiteboardConsumer 
 
 
 application = ProtocolTypeRouter(
@@ -29,6 +29,8 @@ application = ProtocolTypeRouter(
             URLRouter([
             # path("ws/project/<int:project_id>/", ChatConsumer.as_asgi()),
             re_path(r"ws/project/(?P<project_id>\d+)/$", ChatConsumer.as_asgi()),
+            path("ws/project/<int:project_id>/whiteboard/", WhiteboardConsumer.as_asgi()), # Path for whiteboard
+            # re_path(r"ws/project/<int:project_id>/whiteboard/", WhiteboardConsumer.as_asgi()),
         ]),
     ),
     }

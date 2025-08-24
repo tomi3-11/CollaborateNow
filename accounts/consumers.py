@@ -2,6 +2,8 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 import logging
+from .models import Whiteboard
+from django.contrib.auth.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -89,3 +91,56 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return User.objects.get(id=user_id).username
         except User.DoesNotExist:
             return "Unknown"
+        
+        
+class WhiteboardConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.project_id = self.scope['url_route']['kwargs']['project_id']
+        self.room_group_name = f"Whiteboard_{self.project_id}"
+        
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name,
+        )
+        await self.accept()
+        
+        
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name,
+        )
+    
+    async def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        content = text_data_json['content']
+        user_id = self.scope['user'].id
+        user = await User.objects.aget(id=user_id)
+        
+        # Save the content to the database (optional, for persistence)
+        try:
+            whiteboard = await Whiteboard.objects.aget(project_id=self.project_id)
+            whiteboard.content = content
+            await whiteboard.asave()
+        except Whiteboard.DoesNotExist:
+            whiteboard = await Whiteboard.objects.acreate(project_id=self.projects_id, content=content)
+            
+        # Broadcast the content to the room group
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'whiteboard_update',
+                'content': content
+                'user': user.username,
+            }
+        )
+        
+    async def whiteboard_update(self, event):
+        content = event['connect']
+        user = event['user']
+            
+        # Send the content to the WebSocket
+        await self.send(text_data=json.dumps({
+            'content': content,
+            'user': user,
+        }))
