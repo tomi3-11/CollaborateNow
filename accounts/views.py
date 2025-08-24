@@ -8,7 +8,10 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime, parse_date
 from datetime import datetime
-from .models import Skill, Notification
+from .models import Skill, Notification, Whiteboard
+import json
+from django.http import JsonResponse
+from django.views.decorators.http import require_POST
 
 
 # Create your views here.
@@ -186,10 +189,13 @@ def project_detail(request, project_id):
     if request.user.is_authenticated:
         is_member = project.projectmembership_set.filter(user=request.user).exists()
         
+    whiteboard, created = Whiteboard.objects.get_or_create(project=project) # Get or create whiteboard
+        
     context = {
         'project': project,
         "Members":  members,
         "is_member": is_member,
+        "whiteboard_content": whiteboard.content,
     }
     return render(request, "accounts/project_detail.html", context)
 
@@ -354,3 +360,18 @@ def leave_project(request, project_id):
 def mark_all_read(request):
     Notification.objects.filter(user=request.user, is_read=False).update(is_read=True)
     return redirect('accounts:profile') # redirect to profile 
+
+
+@login_required
+@require_POST
+def save_whiteboard(request, project_id):
+    project = get_object_or_404(Project, id=project_id)
+    try:
+        data = json.loads(request.body)
+        content = data.get('content', '')
+        Whiteboard, created = Whiteboard.objects.get_or_create(project=project)
+        Whiteboard.content = content
+        Whiteboard.save()
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'error': str(e)}, status=400)

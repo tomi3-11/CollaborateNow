@@ -94,15 +94,23 @@
         </div>
             <input type="text" id="chat-message-input">
             <button id="chat-message-submit">Send</button>
-        <p>Chat functionality Coming Sonn...</p>
+        <!-- <p>Chat functionality Coming Sonn...</p> -->
     </section>
 
     <section>
         <h3>Whiteboard</h3>
-        <p>Collaborative Whiteboard/editor Coming Soon...</p>
+        <textarea id="whiteboard-content" style="width: 100%; height: 300px;">
+            {{ whiteboard_content }}
+        </textarea>
+        <button id="save-whiteboard">Save Whiteboard</button>
+        <div class="whiteboard-display"></div>
+        <!-- <p>Collaborative Whiteboard/editor Coming Soon...</p> -->
     </section>
 
     <script>
+
+        // Chat functionality with WebSocket
+
         const project_id = {{ project.id }};
         const chatSocket = new WebSocket(
             'ws://'
@@ -129,6 +137,62 @@
             }));
             messageInputDom.value = '';
         };
+
+
+        // Whiteboard functionality
+
+        const whiteboardContent = document.querySelector('#whiteboard-content');
+        const saveWhiteboardButton = document.querySelector('#save-whiteboard');
+        const whiteboardDisplay = document.querySelector('#whiteboard-display');
+
+        function renderWhiteboardContent(content) {
+            let renderedContent = content;
+
+            // Basic Markdown-like rendering
+            renderedContent = renderedContent.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+            renderedContent = renderedContent.replace(/\*(.+?)\*/g, '<em>$1</em>');
+            renderedContent = renderedContent.replace(/__(.+?)__/g, '<u>$1</u>');
+            renderedContent = renderedContent.replace(/_(.+?)_/g, '<i>$1</i>');
+            renderedContent = renderedContent.replace(/## (.+?)$/gm, '<h3>$1</h3>');
+
+            // Code block rendering (very basic)
+            renderedContent = renderedContent.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+            // Image rendering (simplistic link-based)
+            renderedContent = renderedContent.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
+
+            whiteboardDisplay.innerHTML = renderedContent;
+        }
+
+        renderWhiteboardContent(whiteboardContent.value);
+
+        whiteboardContent.addEventListener('input', function() {
+            renderWhiteboardContent(this.value); // Real-time preview as you type 
+        });
+
+        saveWhiteboardButton.onclick = function() {
+            const content = whiteboardContent.value;
+            fetch(`/projects/${project_id}/whiteboard/save/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({ 'content': content }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    console.log('Whiteboard saved!');
+                    // Optionally provide user feedback
+                } else {
+                    console.error('Error saving whiteboard:', data.error);
+                }
+            });
+        };
+
+
+
     </script>
 
     
