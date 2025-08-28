@@ -375,9 +375,12 @@ def save_whiteboard(request, project_id):
         whiteboard.content = content
         whiteboard.save()
         
-        return JsonResponse({'status': 'success'})
+        # Adding a success message after the whiteboard is saved
+        # messages.success(request, "Whiteboard saved successfully!")
+        
+        return JsonResponse({'success': True, "message": "Whiteboard saved successfully!"})
     except Exception as e:
-        return JsonResponse({'status': 'error', 'error': str(e)}, status=400)
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)
     
     
 @login_required

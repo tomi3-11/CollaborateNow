@@ -99,14 +99,17 @@
 
     <section>
         <h3>Whiteboard</h3>
-        <textarea id="whiteboard-content" style="width: 100%; height: 300px;">
-            {{ whiteboard_content }}
-        </textarea>
+        <textarea id="whiteboard-content" style="width: 100%; height: 300px;">{{ whiteboard_content }}</textarea>
+
+        <div id="success-msg" style="display:none; color:#fff; font-weight:bold; background: #04aa04; padding: 7px 10px; border-radius: 10px; width: fit-content; font-family: 'Comic sans Ms'; margin-bottom: 20px;"></div>
+
         <button id="save-whiteboard">Save Whiteboard</button>
         
         <h4>Preview: </h4>
-        <div id="whiteboard-display" style="border: 1px solid #CCC; padding: 10px; min-height: 100px;"></div>
-        <!-- <p>Collaborative Whiteboard/editor Coming Soon...</p> -->
+        <div id="whiteboard-preview" 
+        style="border:1px solid #ccc; padding:10px; min-height:200px; max-height: 400px; overflow-y: auto;">
+        </div>
+
     </section>
 
 
@@ -160,45 +163,26 @@
 
         const whiteboardContent = document.querySelector('#whiteboard-content');
         const saveWhiteboardButton = document.querySelector('#save-whiteboard');
-        const whiteboardDisplay = document.querySelector('#whiteboard-display');
+        const whiteboardPreview = document.querySelector('#whiteboard-preview');
 
         function renderWhiteboardContent(content) {
-            let renderedContent = content;
-
-            // Basic Markdown-like rendering
-            renderedContent = renderedContent.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            renderedContent = renderedContent.replace(/\*(.+?)\*/g, '<em>$1</em>');
-            renderedContent = renderedContent.replace(/__(.+?)__/g, '<u>$1</u>');
-            renderedContent = renderedContent.replace(/_(.+?)_/g, '<i>$1</i>');
-            renderedContent = renderedContent.replace(/## (.+?)$/gm, '<h3>$1</h3>');
-
-            // Code block rendering (very basic)
-            renderedContent = renderedContent.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
-
-            // Image rendering (simplistic link-based)
-            renderedContent = renderedContent.replace(/!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1">');
-
-            whiteboardDisplay.innerHTML = renderedContent;
-
-            
             // Markdown rendering using markdown2 (server-side)
-            fetch('/projects/render_whiteboard/', {
+            fetch('{% url "accounts:render_whiteboard_content" %}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ 'content': content }),
+                body: JSON.stringify({ content }),
             })
             .then(response => response.json())
             .then(data => {
                 if (data.rendered_content) {
-                    whiteboardDisplay.innerHTML = data.rendered_content;
+                    whiteboardPreview.innerHTML = data.rendered_content;
                     hljs.highlightAll(); // Apply syntax highlighting after rendering 
-                } else {
-                    whiteboardDisplay.innerHTML = '<p>Error rendering content.</p>'; 
                 }
-            });
+            })
+            .catch(err => console.error("Preview error:", err));
         }
 
         renderWhiteboardContent(whiteboardContent.value);
@@ -225,7 +209,7 @@
 
         saveWhiteboardButton.onclick = function() {
             const content = whiteboardContent.value;
-            fetch(`/projects/${project_id}/whiteboard/save/`, {
+            fetch("{% url 'accounts:save_whiteboard' project.id %}", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -235,9 +219,17 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.status === 'success') {
+                if (data.success) {
                     console.log('Whiteboard saved!');
                     // Optionally provide user feedback
+                    let msgBox = document.getElementById("success-msg");
+                    msgBox.innerText = data.message;
+                    msgBox.style.display = "block";
+
+                    // Hide message after 3 seconds
+                    setTimeout(() => {
+                        msgBox.style.display = "none";
+                    }, 3000)
                 } else {
                     console.error('Error saving whiteboard:', data.error);
                 }
