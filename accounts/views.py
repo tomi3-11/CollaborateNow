@@ -370,9 +370,11 @@ def save_whiteboard(request, project_id):
     try:
         data = json.loads(request.body)
         content = data.get('content', '')
-        Whiteboard, created = Whiteboard.objects.get_or_create(project=project)
-        Whiteboard.content = content
-        Whiteboard.save()
+        
+        whiteboard, created = Whiteboard.objects.get_or_create(project=project)
+        whiteboard.content = content
+        whiteboard.save()
+        
         return JsonResponse({'status': 'success'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'error': str(e)}, status=400)
@@ -384,7 +386,12 @@ def render_whiteboard_content(request):
     try:
         data = json.loads(request.body)
         content = data.get('content', '')
-        rendered_content = markdown2.markdown(content, extras=['fenced-code-blocks', 'tables', 'break-on-newline'])
+        
+        rendered_content = markdown2.markdown(
+            content, 
+            extras=['fenced-code-blocks', 'tables', 'break-on-newline']
+        )
+        
         return JsonResponse({'rendered_content': rendered_content})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400) 

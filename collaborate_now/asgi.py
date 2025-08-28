@@ -12,23 +12,24 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 # ASGI Functionality for collaborate_now with channels
 
 import os
+import django
 from django.core.asgi import get_asgi_application
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "collaborate_now.settings")
-
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
 from django.urls import re_path, path
-from accounts.consumers import ChatConsumer, WhiteboardConsumer 
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "collaborate_now.settings")
+
+django.setup()
+
+from accounts.consumers import ChatConsumer, WhiteboardConsumer 
 
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
         "websocket": AuthMiddlewareStack(
             URLRouter([
-            # path("ws/project/<int:project_id>/", ChatConsumer.as_asgi()),
-            re_path(r"ws/project/(?P<project_id>\d+)/$", ChatConsumer.as_asgi()),
+            path("ws/project/<int:project_id>/chat/", ChatConsumer.as_asgi()),
             path("ws/project/<int:project_id>/whiteboard/", WhiteboardConsumer.as_asgi()), # Path for whiteboard
             # re_path(r"ws/project/<int:project_id>/whiteboard/", WhiteboardConsumer.as_asgi()),
         ]),
