@@ -97,6 +97,8 @@
         <!-- <p>Chat functionality Coming Sonn...</p> -->
     </section>
 
+    <!-- Whiteboard Section -->
+
     <section>
         <h3>Whiteboard</h3>
         <textarea id="whiteboard-content" style="width: 100%; height: 300px;">{{ whiteboard_content }}</textarea>
@@ -110,6 +112,43 @@
         style="border:1px solid #ccc; padding:10px; min-height:200px; max-height: 400px; overflow-y: auto; margin-bottom: 3rem;">
         </div>
 
+    </section>
+
+    <!-- Task Addition Section -->
+
+    <section>
+        <h3>Tasks</h3>
+        <h4>Create New Task</h4>
+        <form method="post">
+            {% csrf_token %}
+            {{ task_form.as_p }}
+            <button type="submit">Create Task</button>
+        </form>
+
+        <h4>Project Tasks</h4>
+        {% if tasks %}
+            <ul>
+                {% for task in tasks %}
+                    <li>
+                        <strong>{{ task.title }}</strong>
+                        {% if task.assigned_to %}
+                            (Assigned to: {{ task.assigned_to.username }})
+                        {% else %}
+                            (Not assigned)
+                        {% endif %}
+                        - Status: {{ task.get_status_display }}
+                        {% if task.due_date %}
+                            Due: {{ task.due_date }}
+                        {% endif %}
+                        {% if task.description %}
+                            <p>{{ task.description }}</p>
+                        {% endif %}
+
+                        <a href="#">Edit</a> | <a href="#">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </section>
 
 

@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet, CreateProjectStep1Form, CreateProjectStep2Form, CreateProjectStep3Form
+from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet, CreateProjectStep1Form, CreateProjectStep2Form, CreateProjectStep3Form, TaskForm
 from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectMembership, UserProfile, Skill, ProjectRequiredSkill
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime, parse_date
 from datetime import datetime
-from .models import Skill, Notification, Whiteboard
+from .models import Skill, Notification, Whiteboard, Task
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -191,12 +191,28 @@ def project_detail(request, project_id):
         is_member = project.projectmembership_set.filter(user=request.user).exists()
         
     whiteboard, created = Whiteboard.objects.get_or_create(project=project) # Get or create whiteboard
+    tasks = Task.objects.filter(project=project).order_by('-created_at') # Fetch tasks from the project
+    
+    if request.method == 'POST':
+        task_form = TaskForm(request.POST, project=project, user=request.user)
+        if task_form.is_valid():
+            new_task = task_form.save(commit=False)
+            new_task.project = project
+            new_task.created_by = request.user
+            new_task.save()
+            
+            messages.success(request, f"Task '{new_task.title}' created successfully.")
+            return redirect('project_detail', project_id=project_id)
+    else:
+        task_form = TaskForm(project=project, user=request.user)
         
     context = {
         'project': project,
         "Members":  members,
         "is_member": is_member,
         "whiteboard_content": whiteboard.content,
+        "tasks": tasks, # passes the tasks to the template
+        "task_form": task_form, # passes the task creation form to the template
     }
     return render(request, "accounts/project_detail.html", context)
 
