@@ -202,7 +202,7 @@ def project_detail(request, project_id):
             new_task.save()
             
             messages.success(request, f"Task '{new_task.title}' created successfully.")
-            return redirect('project_detail', project_id=project_id)
+            return redirect('accounts:project_detail', project_id=project_id)
     else:
         task_form = TaskForm(project=project, user=request.user)
         
