@@ -131,3 +131,27 @@ class Whiteboard(models.Model):
     
     def __str__(self):
         return f"Whiteboard for {self.project.title}"
+    
+
+class Task(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='tasks')
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    assigned_to = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='assigned_tasks')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tasks')
+    created_at = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField(null=True, blank=True)
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('to_do', 'To Do'),
+            ('in_progress', 'In Progress'),
+            ('completed', 'Completed'),
+            ('on_hold', 'On Hold'),
+            ('cancelled', 'Cancelled'),
+        ],
+        default='to_do'
+    )
+    
+    def __str__(self):
+        return f"{self.title} in {self.project.title}"
