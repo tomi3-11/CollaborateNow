@@ -23,5 +23,6 @@ urlpatterns = [
     path('notifications/mark_all_read/', views.mark_all_read, name='mark_all_read'),
     path('projects/<int:project_id>/whiteboard/save/', views.save_whiteboard, name='save_whiteboard'),
     path('projects/render_whiteboard/', views.render_whiteboard_content, name='render_whiteboard_content'),
-    path('tasks/edit/<int:task_id>', views.edit_task, name='edit_task'),
+    path('tasks/edit/<int:task_id>/', views.edit_task, name='edit_task'),
+    path('tasks/delete/<int:task_id>/', views.delete_task, name='delete_task'),
 ]

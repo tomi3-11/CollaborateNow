@@ -144,7 +144,13 @@
                             <p>{{ task.description }}</p>
                         {% endif %}
 
-                        <a href="{% url 'accounts:edit_task' task.id %}" class="btn btn-primary">Edit</a> | <a class="btn btn-danger" href="#">Delete</a>
+                        <a href="{% url 'accounts:edit_task' task.id %}" class="btn btn-primary">Edit</a>
+                        {% if user.is_authenticated and task.created_by == user or user.is_staff %}
+                        <form action="{% url 'accounts:delete_task' task.id %}" method="post">
+                            {% csrf_token %}
+                            <button style="margin-top: 20px;" class="btn btn-danger" type="submit" onclick="return confirm('Are you sure you want to delete this task?')">Delete</button>
+                        </form>
+                        {% endif %}
                     </li>
                 {% endfor %}
             </ul>
