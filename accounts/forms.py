@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from .models import Project, UserProfile, ProjectRequiredSkill, Task, User
+from .models import Project, UserProfile, ProjectRequiredSkill, Task, User, ProjectFile
 
 class RegistrationForm(UserCreationForm):
     class Meta:
@@ -31,12 +31,14 @@ class ProjectCreationForm(forms.ModelForm):
             'project_type',
             'visibility',
             'location',
+            'github_repository_url'
             ]
         widgets = {
             'description': forms.Textarea(attrs={'rows': 5}),
             'required skills': forms.Textarea(attrs={'rows': 3}),
             'objectives': forms.Textarea(attrs={'rows': 3}),
             'goals': forms.Textarea(attrs={'row': 3}),
+            'github_repository_url': forms.URLInput(attrs={"placeholder": 'e.g., https:github.com/user/repo'}), 
         }
 
     
@@ -73,6 +75,35 @@ ProjectRequiredSkillFormSet = inlineformset_factory(
 )
 
 
+class ProjectEditForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = [
+            'title', 
+            'description', 
+            'min_members', 
+            'max_members', 
+            'required_skills',
+            'objectives',
+            'goals',
+            'start_time',
+            'operation_days',
+            'deadline',
+            'status',
+            'project_type',
+            'visibility',
+            'location',
+            'github_repository_url'
+        ]
+        widgets = {
+            'description': forms.Textarea(attrs={'rows': 5}),
+            'required skills': forms.Textarea(attrs={'rows': 3}),
+            'objectives': forms.Textarea(attrs={'rows': 3}),
+            'goals': forms.Textarea(attrs={'row': 3}),
+            'github_repository_url': forms.URLInput(attrs={"placeholder": 'e.g., https:github.com/user/repo'}), 
+        }
+
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
@@ -90,10 +121,12 @@ class CreateProjectStep1Form(forms.ModelForm):
             'title',
             'description',
             'min_members',
-            'max_members'
+            'max_members',
+            'github_repository_url',
         ]
         widgets = {
-            'description': forms.Textarea(attrs={'rows': 5})
+            'description': forms.Textarea(attrs={'rows': 5}),
+            'github_repository_url': forms.URLInput(attrs={'placeholder': 'e.g., https://github.com/user/repo'})
         }
 
     def clean_min_members(self):
@@ -141,12 +174,14 @@ class CreateProjectStep3Form(forms.ModelForm):
             'start_time',
             'operation_days',
             'deadline',
+            'github_repository_url',
         ]
         widgets = {
             'objectives': forms.Textarea(attrs={'rows': 3}),
             'goals': forms.Textarea(attrs={'rows': 3}),
             'start_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
             'deadline': forms.DateInput(attrs={'type': 'date'}, format="%Y-%m-%d"),
+            'github_repository_url': forms.URLInput(attrs={'placeholder': 'e.g., https://github.com/user/repo'})
         }
         
 
@@ -189,3 +224,12 @@ TaskFormSet = inlineformset_factory(
     extra=1,
     can_delete=True
 )    
+
+
+class ProjectFileUploadForm(forms.ModelForm):
+    class Meta:
+        model = ProjectFile
+        fields = [
+            'file',
+            'description',
+        ]

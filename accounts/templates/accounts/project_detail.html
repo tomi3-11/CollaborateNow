@@ -36,6 +36,11 @@
 
     <section>
     <h3>Project Details</h3>
+
+        {% if project.description %}
+            <p><strong>Description: </strong> {{ project.description|linebreaksbr }}</p>
+        {% endif %}
+
         {% if project.objectives %}
             <p><strong>Objectives: </strong>{{ project.objectives|linebreaksbr }}</p>
         {% endif %}
@@ -75,6 +80,18 @@
         {% if project.location %}
             <p><strong>Location: </strong>{{ project.location }}</p>
         {% endif %}
+        <!-- GitHub Link -->
+        {% if project.github_repository_url %}
+            <p>
+                <strong>GitHub Repository:</strong> 
+                <a href="{{ project.github_repository_url }}" target="_blank" rel="noopener noreferrer">{{ project.github_repository_url }}</a>
+            </p>
+        {% endif %}
+
+        <div class="edit_project mb-3">
+            <a href="{% url 'accounts:edit_project' project.id %}" class="btn btn-success">Edit Project</a>
+        </div>
+
     </section>
 
     <section>
@@ -169,7 +186,40 @@
                     </li>
                 {% endfor %}
             </ul>
+        {% else %}
+            <p>No tasks created yet.</p>
         {% endif %}
+    </section>
+
+    <!-- Project files and Uploads -->
+    <section>
+        <!-- Upload -->
+        <h3>Files</h3>
+        <h4>Upload New File</h4>
+        <form enctype="multipart/form-data" method="post">
+            {% csrf_token %}
+            {{ file_form.as_p }}
+            <button class="btn btn-primary" type="submit">Upload File</button>
+        </form>
+        <!-- Display Files uploaded in the project -->
+        <h4>Project Files</h4>
+        {% if project_files %}
+            <ul>
+                {% for file in project_files %}
+                    <li>
+                        <a class="btn btn-primary" href="{% url 'accounts:download_file' file.id %}">{{ file.filename }}</a>
+                        {% if file.description %}
+                            - {{ file.description }}
+                        {% endif %}
+                        (Uploaded by: {{ file.uploaded_by.username }} on {{ file.uploaded_at }})
+                        <a href="#">Delete</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No file uploaded yet.</p>
+        {% endif %}
+
     </section>
 
 

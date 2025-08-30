@@ -1,14 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
-from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet, CreateProjectStep1Form, CreateProjectStep2Form, CreateProjectStep3Form, TaskForm
+from .forms import RegistrationForm, LoginForm, ProjectCreationForm, UserProfileForm, ProjectRequiredSkillFormSet, CreateProjectStep1Form, CreateProjectStep2Form, CreateProjectStep3Form, TaskForm, ProjectEditForm, ProjectFileUploadForm
 from django.contrib.auth.decorators import login_required
 from .models import Project, ProjectMembership, UserProfile, Skill, ProjectRequiredSkill
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime, parse_date
 from datetime import datetime
-from .models import Skill, Notification, Whiteboard, Task
+from .models import Skill, Notification, Whiteboard, Task, ProjectFile
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -23,7 +23,7 @@ def register(request):
         if form.is_valid():
             user = form.save()
             auth_login(request, user)
-            return redirect('home') # Redirect to home page after registration
+            return redirect('accounts:login_view') # Redirect to login page after registration
     else:
         form = RegistrationForm()
     
@@ -70,6 +70,33 @@ def create_project(request):
 
     context = {'project_form': project_form, 'required_skills_formset': required_skills_formset}
     return render(request, 'accounts/create_project.html', context)
+
+
+@login_required
+def edit_project(request, project_id):
+    project  = get_object_or_404(Project, id=project_id)
+    
+    # Add permission checks here if needed (e.g., only creator can edit )
+    if project.creator != request.user and not request.user.is_staff:
+        messages.error(request, "You do not have permission to edit this project.")
+        return redirect('accounts:project_detail', project_id=project_id)
+    
+    if request.method == "POST":
+        form = ProjectEditForm(request.POST, instance=project) # Passing the existing project instance
+        if form.is_valid():
+            form.save()
+            messages.success(request, f"Project '{project.title}' updated successfully.")
+            return redirect('accounts:project_detail', project_id=project_id)
+        
+    else:
+        form = ProjectEditForm(instance=project) # Passing existing project instance
+            
+    context = {
+        'form': form,
+        'project': project,
+    }
+        
+    return render(request, 'accounts/edit_project.html', context)
 
 
 def project_submitted(request):
@@ -192,12 +219,14 @@ def project_detail(request, project_id):
         
     whiteboard, created = Whiteboard.objects.get_or_create(project=project) # Get or create whiteboard
     tasks = Task.objects.filter(project=project).order_by('-created_at') # Fetch tasks from the project
+    files = ProjectFile.objects.filter(project=project).order_by('-uploaded_at') # Fetch project files
     
     # Adds status_choices for rendering dropdowns
     status_choices = Task._meta.get_field('status').choices
     
     if request.method == 'POST':
         task_form = TaskForm(request.POST, project=project, user=request.user)
+        file_form = ProjectFileUploadForm(request.POST, request.FILES) # Initialize file form with POST data and files
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
             new_task.project = project
@@ -206,9 +235,16 @@ def project_detail(request, project_id):
             
             messages.success(request, f"Task '{new_task.title}' created successfully.")
             return redirect('accounts:project_detail', project_id=project_id)
+        elif file_form.is_valid():
+            new_file = file_form.save(commit=False)
+            new_file.project = project
+            new_file.uploaded_by = request.user
+            new_file.save()
+            messages.success(request, f"File '{new_file.filename()}' uploaded successfully.")
+            return redirect('accounts:project_detail', project_id=project_id)
     else:
         task_form = TaskForm(project=project, user=request.user)
-        
+        file_form = ProjectFileUploadForm() # Initialize and empty file upload form for GET requests
     context = {
         'project': project,
         "Members":  members,
@@ -217,6 +253,8 @@ def project_detail(request, project_id):
         "tasks": tasks, # passes the tasks to the template
         "task_form": task_form, # passes the task creation form to the template
         "status_choices": status_choices,
+        "file_form": file_form, # passing the file upload form to the template
+        "project_files": files, # Passing the list of project files to the templates
     }
     return render(request, "accounts/project_detail.html", context)
 

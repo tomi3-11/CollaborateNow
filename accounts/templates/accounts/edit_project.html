@@ -1,0 +1,15 @@
+{% extends 'accounts/base.html' %}
+
+{% block title %}Edit Project: {{ project.title }} {% endblock %}
+
+{% block content %}
+
+<h2>Edit Project: {{ project.title }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button class="btn btn-primary mb-3" type="submit">Save Changes</button>
+    <a href="{% url 'accounts:project_detail' project.id %}" class="btn btn-danger mb-3">Cancel</a>
+</form>
+
+{% endblock %}
