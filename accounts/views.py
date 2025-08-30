@@ -13,6 +13,7 @@ import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 import markdown2
+from django.http import FileResponse
 
 
 # Create your views here.
@@ -532,3 +533,20 @@ def update_task_status(request, task_id):
             'status': 'error',
             'message': 'Invalid status provided',
         }, status=400)
+        
+        
+# File download view
+@login_required
+def download_file(request, file_id):
+    project_file = get_object_or_404(ProjectFile, id=file_id)
+    project = project_file.project
+    
+    # Ensure the user is a member of the project or the project creator
+    if not ProjectMembership.objects.filter(user=request.user, project=project).exists() and project.creator != request.user and not request.user.is_staff:
+        messages.error(request, "You do not have permission to download this file.")
+        return redirect('accounts:project_detail', project_id=project.id)
+    
+    file_path = project_file.file.path
+    response = FileResponse(open(file_path, 'rb'))
+    response['Content-Disposition'] = f'attachment; filename="{project_file.filename()}"'
+    return response
