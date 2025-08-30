@@ -163,7 +163,7 @@ class TaskForm(forms.ModelForm):
         fields = ['title', 'description', 'assigned_to', 'due_date', 'status']
         widgets = {
             'description': forms.Textarea(attrs={'rows': 3}),
-            'status': forms.Select(attrs={'class': 'form-control'})  # ✅ styling only
+            'status': forms.Select(attrs={'class': 'form-select'})  #styling only
         }
 
     def __init__(self, *args, **kwargs):

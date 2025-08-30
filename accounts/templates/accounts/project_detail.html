@@ -139,7 +139,9 @@
                         {% endif %} <br>
                         <!-- Status -->
                          - Status
-                        <select data-task-id="{{ task.id }}" class="task-status-dropdown">
+                        <select data-task-id="{{ task.id }}" 
+                                class="task-status-dropdown form-select mb-3"
+                                style="min-height: 35px; min-width: 150px; position: relative; z-index: 9999; background: #fff;">
                             {% for value, display in task.status_choices %}
                                 <option value="{{ value }}" {% if value == task.status %}selected{% endif %}>
                                     {{ display }}
