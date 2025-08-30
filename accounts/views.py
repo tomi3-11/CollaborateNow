@@ -193,6 +193,9 @@ def project_detail(request, project_id):
     whiteboard, created = Whiteboard.objects.get_or_create(project=project) # Get or create whiteboard
     tasks = Task.objects.filter(project=project).order_by('-created_at') # Fetch tasks from the project
     
+    # Adds status_choices for rendering dropdowns
+    status_choices = Task._meta.get_field('status').choices
+    
     if request.method == 'POST':
         task_form = TaskForm(request.POST, project=project, user=request.user)
         if task_form.is_valid():
@@ -213,6 +216,7 @@ def project_detail(request, project_id):
         "whiteboard_content": whiteboard.content,
         "tasks": tasks, # passes the tasks to the template
         "task_form": task_form, # passes the task creation form to the template
+        "status_choices": status_choices,
     }
     return render(request, "accounts/project_detail.html", context)
 
@@ -459,3 +463,34 @@ def delete_task(request, task_id):
     task.delete()
     messages.success(request, f"Task '{task.title}' deleted successfully.")
     return redirect('accounts:project_detail', project_id=project.id)
+
+
+@login_required
+@require_POST
+def update_task_status(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    project = task.project
+    
+    # Ensure the user is a member of the project or the project creator
+    if not ProjectMembership.objects.filter(user=request.user, project=project).exists() and project.creator != request.user and not request.user.is_staff:
+        return JsonResponse(
+            {
+                'status': 'error',
+                'message': 'Permission denied',
+                
+            }, status=403
+        )
+        
+    new_status = request.POST.get('status')
+    if new_status and new_status in dict(Task.status_choices):
+        task.status = new_status
+        task.save()
+        return JsonResponse({
+            'status': 'success',
+            'new_status_display': task.get_status_display(),
+        })
+    else:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid status provided',
+        }, status=400)

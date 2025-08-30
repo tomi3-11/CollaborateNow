@@ -131,12 +131,25 @@
                 {% for task in tasks %}
                     <li>
                         <strong>{{ task.title }}</strong>
+                        <!-- Assigned to -->
                         {% if task.assigned_to %}
                             (Assigned to: {{ task.assigned_to.username }})
                         {% else %}
                             (Not assigned)
-                        {% endif %}
-                        - Status: {{ task.get_status_display }}
+                        {% endif %} <br>
+                        <!-- Status -->
+                         - Status
+                        <select data-task-id="{{ task.id }}" class="task-status-dropdown">
+                            {% for value, display in task.status_choices %}
+                                <option value="{{ value }}" {% if value == task.status %}selected{% endif %}>
+                                    {{ display }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <span id="status-display-{{ task.id }}">
+                            {{ task.get_status_display }}
+                        </span>
+                        <!-- Due Date -->
                         {% if task.due_date %}
                             Due: {{ task.due_date }}
                         {% endif %}
@@ -282,7 +295,45 @@
         };
 
 
+        // Task Status Drop-Down 
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusDropdowns = document.querySelectorAll('.task-status-dropdown');
+            statusDropdowns.forEach(dropdown => {
+                dropdown.addEventListener('change', function() {
+                    const taskId = this.dataset.taskId;
+                    const newStatus = this.value;
+                    const csrfToken = document.querySelector('input[name="csrfmiddlewaretoken"]').value;
 
+                    fetch(`/tasks/update_status/${taskId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        body: `status=${newStatus}`,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            document.getElementById(`status-display-${taskId}`).textContent = data.new_status_display;
+                            console.log(`Task ${taskId} status updated to ${newStatus}`); 
+                        } else {
+                            console.error(`Error updating task ${taskId} status:`, data.message);
+                            // Optionally revert the dropdown to the previous value
+                            this.value = this.dataset.previousValue || this.dataset.initialValue;
+                        }
+                        this.dataset.previousValue = newStatus; // Update previous value
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Optionally revert the dropdown on error
+                        this.value = this.dataset.previousValue || this.dataset.initialValue;
+                    });
+                    this.dataset.initialValue = newStatus // Store the current value for potential revert
+                });
+                dropdown.dataset.initialValue = dropdown.value; // Store initial value on load
+            });
+        });
 
 
 
