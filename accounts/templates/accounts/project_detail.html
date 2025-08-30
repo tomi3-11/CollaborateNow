@@ -144,7 +144,7 @@
                             <p>{{ task.description }}</p>
                         {% endif %}
 
-                        <a href="#">Edit</a> | <a href="#">Delete</a>
+                        <a href="{% url 'accounts:edit_task' task.id %}" class="btn btn-primary">Edit</a> | <a class="btn btn-danger" href="#">Delete</a>
                     </li>
                 {% endfor %}
             </ul>

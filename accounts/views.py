@@ -414,3 +414,32 @@ def render_whiteboard_content(request):
         return JsonResponse({'rendered_content': rendered_content})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=400) 
+    
+
+@login_required
+def edit_task(request, task_id):
+    task = get_object_or_404(Task, id=task_id)
+    project = task.project
+    
+    # Ensure the user is a member of the project or the project creator
+    if not ProjectMembership.objects.filter(user=request.user, project=project).exists() and project.creator != request.user and not request.user.is_staff:
+        messages.error(request, "You do not have permission to edit this task.")
+        return redirect('accounts:project_detail', project_id=project.id)
+    
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task, project=project, user=task.assigned_to)
+        if form.is_valid():
+            updated_task = form.save()
+            messages.success(request, f"Task '{updated_task.title}' updated successfully.")
+            return redirect('accounts:project_detail', project_id=project.id)
+        
+    else:
+        form = TaskForm(instance=task, project=project, user=task.assigned_to)
+    
+    context = {
+        'form': form,
+        'task': task,
+        'project': project
+    }
+    
+    return render(request, 'accounts/edit_task.html', context)
