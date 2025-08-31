@@ -170,3 +170,31 @@ class ProjectFile(models.Model):
     
     def filename(self):
         return self.file.name.split('/')[-1] # Get the actual filename
+    
+    
+class Activity(models.Model):
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name='activities')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    activity_type = models.CharField(
+        max_length=50,
+        choices=[
+            ('member_joined', 'Member Joined'),
+            ('member_left', 'Member Left'),
+            ('chat_message', 'Chat Message'),
+            ('whiteboard_updated', 'WhiteBoard Updated'),
+            ('task_created', 'Task Created'),
+            ('task_deleted', 'Task Deleted'),
+            ('task_edited', 'Task Edited'),
+            ('task_status_updated', 'Task Status Updated'),
+            ('file_uploaded', 'File Uploaded'),
+        ]
+    )
+    details = models.TextField(blank=True)
+    
+    class Meta:
+        ordering = ['-timestamp'] # Order by the most recent first.
+        
+    def __str__(self):
+        return f"{self.activity_type} in {self.project.title} by {self.user.username if self.user else 'System'}"
+    

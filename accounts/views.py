@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.utils.dateparse import parse_datetime, parse_date
 from datetime import datetime
-from .models import Skill, Notification, Whiteboard, Task, ProjectFile
+from .models import Skill, Notification, Whiteboard, Task, ProjectFile, Activity
 import json
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
@@ -133,6 +133,7 @@ def join_project(request, project_id):
     if project.current_members >= project.max_members:
         messages.error(request, "This project is full.")
         return redirect('accounts:project_list')
+        
     
     # Check if the user is already a member
     if ProjectMembership.objects.filter(user=request.user, project=project).exists():
@@ -146,6 +147,7 @@ def join_project(request, project_id):
     project.current_members += 1
     project.save()
 
+    Activity.objects.create(project=project, user=request.user, activity_type='member_joined') # Create Activity log.
     messages.success(request, f"You have successfully joined '{project.title}")
     # return redirect('accounts:project_list')
 
@@ -233,7 +235,7 @@ def project_detail(request, project_id):
             new_task.project = project
             new_task.created_by = request.user
             new_task.save()
-            
+            Activity.objects.create(project=project, user=request.user, activity_type='task_created', details=f"Task '{new_task.title}' created") # Create activity log
             messages.success(request, f"Task '{new_task.title}' created successfully.")
             return redirect('accounts:project_detail', project_id=project_id)
         elif file_form.is_valid():
@@ -241,6 +243,7 @@ def project_detail(request, project_id):
             new_file.project = project
             new_file.uploaded_by = request.user
             new_file.save()
+            Activity.objects.create(project=project, user=request.user, activity_type='file_uploaded', details=f"File '{new_file.filename()}' uploaded") # Create activity log 
             messages.success(request, f"File '{new_file.filename()}' uploaded successfully.")
             return redirect('accounts:project_detail', project_id=project_id)
     else:
@@ -409,6 +412,7 @@ def leave_project(request, project_id):
         membership.delete()
         project.current_members = max(0, project.current_members - 1) # Ensure count doesn't go below zero
         project.save()
+        Activity.objects.create(project=project, user=request.user, activity_type='member_left') # Create activity log
         messages.success(request, f"You have successfully left the project '{project.title}.")
         return redirect('accounts:project_detail', project_id=project_id)
     except ProjectMembership.DoesNotExist:
@@ -436,6 +440,8 @@ def save_whiteboard(request, project_id):
         
         # Adding a success message after the whiteboard is saved
         # messages.success(request, "Whiteboard saved successfully!")
+        
+        Activity.objects.create(project=project, user=request.user, activity_type='whiteboard_updated') # Create activity log
         
         return JsonResponse({'success': True, "message": "Whiteboard saved successfully!"})
     except Exception as e:
@@ -473,6 +479,7 @@ def edit_task(request, task_id):
         form = TaskForm(request.POST, instance=task, project=project, user=task.assigned_to)
         if form.is_valid():
             updated_task = form.save()
+            Activity.objects.create(project=project, user=request.user, activity_type='task_edited', details=f"Task '{updated_task.title}' edited") # Create activity log
             messages.success(request, f"Task '{updated_task.title}' updated successfully.")
             return redirect('accounts:project_detail', project_id=project.id)
         
@@ -499,7 +506,9 @@ def delete_task(request, task_id):
         messages.error(request, "You do not have permission to delete this task.")
         return redirect('accounts:project_detail', project_id=project.id)
     
+    task_title = task.title 
     task.delete()
+    Activity.objects.create(project=project, user=request.user, activity_type='task_deleted', details=f"Task '{task_title}' deleted") # Create activity log
     messages.success(request, f"Task '{task.title}' deleted successfully.")
     return redirect('accounts:project_detail', project_id=project.id)
 
@@ -519,11 +528,13 @@ def update_task_status(request, task_id):
                 
             }, status=403
         )
-        
+    
+    old_status = task.get_status_display()
     new_status = request.POST.get('status')
     if new_status and new_status in dict(Task.status_choices):
         task.status = new_status
         task.save()
+        Activity.objects.create(project=project, user=request.user, activity_type='task_status_updated', details=f"Task '{task.title}' status changed from '{old_status}' to '{task.get_status_display()}'") # Create activity log
         return JsonResponse({
             'status': 'success',
             'new_status_display': task.get_status_display(),
