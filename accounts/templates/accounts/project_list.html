@@ -6,7 +6,7 @@
 
 {% block content %}
     <h2>Available Collaborative Projects</h2>
-    <a href="{% url 'accounts:create_project_wizard_step1' %}">Create a Project</a>
+    <a class="btn btn-success mb-3" href="{% url 'accounts:create_project_wizard_step1' %}">Create a Project</a>
     <h3>Work on real projects with peers, build your portfolio, and gain practical experience.</h3>
     {% if messages %}
         <ul class="messages">
@@ -38,11 +38,11 @@
                     members</p>
                     
                     {% if user.is_authenticated and not project.user_is_member %}                      
-                        <a href="{% url 'accounts:join_project' project.id %}">Join Project</a>
+                        <a class="btn btn-success mb-3" href="{% url 'accounts:join_project' project.id %}">Join Project</a>
                     {% elif user.is_authenticated %}
-                        <a href="{% url 'accounts:project_detail' project.id %}">View Project</a>
+                        <a class="btn btn-primary mb-3" href="{% url 'accounts:project_detail' project.id %}">View Project</a>
                     {% else %}
-                        <a href="{% url 'accounts:login' %}">Log in to join</a>
+                        <a class="btn btn-primary" href="{% url 'accounts:login' %}">Log in to join</a>
                     {% endif %}
                 </li>
                 <hr>
