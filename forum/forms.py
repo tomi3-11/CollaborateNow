@@ -7,7 +7,7 @@ from django import forms
 class CreateTopicForm(forms.ModelForm):
     class Meta:
         model = ForumTopic
-        fields = ['title', 'category']
+        fields = ['title', 'category', 'description']
 
 
 class CreatePostForm(forms.ModelForm):

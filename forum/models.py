@@ -18,6 +18,7 @@ class ForumCategory(models.Model):
 class ForumTopic(models.Model):
     category = models.ForeignKey(ForumCategory, on_delete=models.SET_NULL, null=True, blank=True, related_name='topics')
     title = models.CharField(max_length=255)
+    description = models.TextField(default="No text provided.")
     creator = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     last_active = models.DateTimeField(auto_now=True)

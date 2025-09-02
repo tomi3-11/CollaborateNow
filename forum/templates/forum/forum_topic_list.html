@@ -115,7 +115,7 @@ Community Forum - CollaborateNow
         background: #fff;
         border-radius: 12px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        padding: 1rem 1.2rem;
+        padding: 1.5rem 1.7rem;
         margin-bottom: 1rem;
     }
 
@@ -127,11 +127,12 @@ Community Forum - CollaborateNow
 
     .discussion-category {
         display: inline-block;
-        padding: 0.2rem 0.6rem;
-        border-radius: 8px;
+        padding: 0 0.6rem;
+        border-radius: 18px;
         font-size: 0.75rem;
         font-weight: 600;
-        color: #fff;
+        color: #ffffff;
+        background: #6a5acd;
     }
 
     .category-Technology { background: #6a5acd; }
@@ -152,8 +153,15 @@ Community Forum - CollaborateNow
         color: #666;
     }
 
+    .discussion-stats {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1rem;
+    }
+
     .discussion-stats span {
-        margin-left: 1rem;
+        margin-left: 0.5rem;
     }
 
     /* Sidebar */
@@ -207,6 +215,13 @@ Community Forum - CollaborateNow
         font-size: 0.8rem;
         color: #666;
         margin: 0;
+    }
+
+    .meta-left {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
     }
 
 
@@ -263,49 +278,62 @@ Community Forum - CollaborateNow
                                                 {% if topic.category %}
                                                     <p class="category">{{ topic.category.name }}</p>  
                                                     <p class="created-date">{{ topic.created_at|date:"F Y" }}</p>
-                                                {% endif %}
+                                                    {% endif %}
+                                                </div>
+                                                <h5 class="card-title">{{ topic.title }}</h5>
+                                                <h6 class="card-subtitle mb-2 text-body-secondary">
+                                                    <i class="fa-solid fa-user"></i> {{ topic.creator.username }} <i class="fa-solid fa-clock"></i> {{ topic.last_active|naturaltime }}
+                                                </h6>
+                                                <a style="text-decoration: none; color: rgb(113, 45, 192);" href="{% url 'forum:forum_topic_detail' topic.id %}">Read full discussion <i class="fa fa-circle-arrow-right"></i></a>
                                             </div>
-                                            <h5 class="card-title">{{ topic.title }}</h5>
-                                            <h6 class="card-subtitle mb-2 text-body-secondary">
-                                                <i class="fa-solid fa-user"></i> {{ topic.creator.username }} <i class="fa-solid fa-clock"></i> {{ topic.last_active|naturaltime }}
-                                            </h6>
-                                            <a style="text-decoration: none; color: rgb(113, 45, 192);" href="{% url 'forum:forum_topic_detail' topic.id %}">Read full discussion <i class="fa fa-circle-arrow-right"></i></a>
                                         </div>
                                     </div>
-                                </div>
-                            </li>
-                        {% endfor %}
+                                </li>
+                                {% endfor %}
                     </ul>
                 {% elif search_term %}
-                    <p>No topics found mactching you search term "{{ search_term }}".</p>
+                <p>No topics found mactching you search term "{{ search_term }}".</p>
                 {% else %}
-                    <p>No topics have been created yet.</p>
+                <p>No topics have been created yet.</p>
                 {% endif %}
+            </div>
+        </div> -->
+        
+        
+        {% if topics %}
+        {% for topic in topics %}
+        <div class="discussion-card">
+            <div class="discussion-meta">
+                <div class="meta-left">
+                    <p class="discussion-category category-{{ topic.category.name }}">{{ topic.category.name }}</p>
+                    <p class="created-date">{{ topic.created_at|date:"F Y" }}</p>
                 </div>
-            </div> -->
-
-
-            {% if topics %}
-            {% for topic in topics %}
-            <div class="discussion-card">
-                <div class="discussion-meta">
-                    <span class="discussion-category category-{{ topic.category.name }}">{{ topic.category.name }}</span>
-                    <small class="text-muted">{{ topic.last_active|naturaltime }}</small>
-                </div>
-                <div class="discussion-title">
-                    <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="text-decoration:none; color:#333;">
-                        {{ topic.title }}
-                    </a>
-                </div>
-                <div class="text-muted mb-2">
-                    <i class="fa fa-user"></i> {{ topic.creator.username }}
-                </div>
-                <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="color:#6a5acd; font-size:0.9rem;">Read full discussion →</a>
-                <div class="discussion-footer mt-2">
+                
+                <div class="meta-right">
                     <div class="discussion-stats">
                         <span><i class="fa fa-eye"></i> 24</span>
                         <span><i class="fa fa-comments"></i> 8</span>
                     </div>
+                </div>
+            </div>
+            <div class="discussion-title">
+                <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="text-decoration:none; color:#333;">
+                    {{ topic.title }}
+                </a>
+            </div>
+
+            <div class="discussion-description text-body-secondary">
+                <p class="subtitle">
+                    {{ topic.description|linebreaksbr }}
+                </p>
+            </div>
+
+            <div class="text-muted mb-2">
+                <i class="fa fa-user"></i> {{ topic.creator.username }}
+                <small class="text-muted">{{ topic.last_active|naturaltime }}</small>
+            </div>
+                <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="color:#6a5acd; font-size:0.9rem;">Read full discussion →</a>
+                <div class="discussion-footer mt-2">
                 </div>
             </div>
             {% endfor %}
