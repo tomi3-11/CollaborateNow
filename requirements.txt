@@ -11,6 +11,7 @@ Django==5.2
 hyperlink==21.0.0
 idna==3.10
 incremental==24.7.2
+markdown2==2.5.4
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.22
