@@ -6,8 +6,8 @@
 [![Django](https://img.shields.io/badge/Django-4.x-green.svg)](https://www.djangoproject.com/)
 [![Channels](https://img.shields.io/badge/Channels-4.x-orange.svg)](https://channels.readthedocs.io/en/stable/)
 [![Redis](https://img.shields.io/badge/Redis-Connected-red.svg)](https://redis.io/)
-[![Maintenance](https://img.shields.io/badge/Maintained-Yes-brightgreen.svg)](https://github.com/tomi3-11/https://github.com/tomi3-11/CollaborateNow.git/graphs/commit-activity)
-[![Contributors](https://img.shields.io/github/contributors/your-github-username/your-repo-name)](https://github.com/tomi3-11/https://github.com/tomi3-11/CollaborateNow.git/graphs/contributors)
+[![Maintenance](https://img.shields.io/badge/Maintained-Yes-brightgreen.svg)](https://github.com/tomi3-11/CollaborateNow/graphs/commit-activity)
+[![Contributors](https://img.shields.io/github/contributors/tomi3-11/CollaborateNow)](./CONTRIBUTING.md)
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-v2.1%20adopted-ff69b4.svg)](CODE_OF_CONDUCT.md)
 
 **A powerful and intuitive web-based platform designed to enhance team collaboration and project management.**
