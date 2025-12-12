@@ -4,12 +4,117 @@
     Start a New Topic - CollaborateNow
 {% endblock %}
 
+{% block style %}
+
+<style>
+
+    body {
+        background: #f9f9fb;
+        font-family: "Inter", sans-serif;
+    }
+
+    .create-container {
+        max-width: 650px;
+        margin: 2rem auto;
+        background: #fff;
+        padding: 2rem 2.5rem;
+        border-radius: 14px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .create-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: .5rem;
+        color: #333;
+    }
+
+    .subtitle {
+        font-size: .9rem;
+        color: #666;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Form styling */
+    .create-container form p {
+        margin-bottom: 1.2rem;
+    }
+
+    .create-container input,
+    .create-container select,
+    .create-container textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: .95rem;
+        outline: none;
+        background: #fafafa;
+        transition: all .2s;
+    }
+
+    .create-container input:focus,
+    .create-container textarea:focus,
+    .create-container select:focus {
+        border-color: #6a5acd;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.15);
+    }
+
+    /* Buttons */
+    .btn-submit {
+        background: #6a5acd;
+        color: #fff;
+        padding: 0.4rem 0.8rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+    .btn-submit:hover {
+        background: #5a4cc1;
+    }
+
+    .btn-cancel {
+        background: #f1f1f5;
+        color: #444;
+        padding: 0.4rem 0.8rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-left: .6rem;
+        transition: 0.2s ease;
+        display: inline-block;
+    }
+    .btn-cancel:hover {
+        background: #e4e4eb;
+        color: #222;
+        text-decoration: none;
+    }
+
+    .button-row {
+        margin-top: 1.5rem;
+    }
+
+</style>
+
+{% endblock %}
+
 {% block content %}
-    <p>Start a New Topic</p>
+<div class="create-container">
+
+    <h2 class="create-title">Create a New Discussion</h2>
+    <p class="subtitle">Start a conversation, ask a question, or share your insights with the community.</p>
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Create Topic</button>
-        <button><a href="{% url 'forum:forum_topic_list' %}">Cancel</a></button>
+
+        <div class="button-row">
+            <button type="submit" class="btn-submit">Create Topic</button>
+            <a href="{% url 'forum:forum_topic_list' %}" class="btn-cancel">Cancel</a>
+        </div>
     </form>
+
+</div>
 {% endblock %}
