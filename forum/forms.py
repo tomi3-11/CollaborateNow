@@ -15,7 +15,11 @@ class CreatePostForm(forms.ModelForm):
         model = ForumPost
         fields = ['content']
         widgets = {
-            'content': forms.Textarea(attrs={'rows': 3}),
+            'content': forms.Textarea(attrs={
+                'rows': 3,
+                'class': 'form-control',
+                'placeholder': "write your post here..."    
+            }),
         }
 
 
