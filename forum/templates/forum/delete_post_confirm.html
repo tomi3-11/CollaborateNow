@@ -4,15 +4,105 @@
     Confirm Delete - CollaborateNow
 {% endblock %}
 
+{% block style %}
+
+<style>
+
+    body {
+        background: #f9f9fb;
+        font-family: "Inter", sans-serif;
+    }
+
+    .delete-container {
+        max-width: 650px;
+        margin: 2.5rem auto;
+        background: #fff;
+        padding: 2rem 2.5rem;
+        border-radius: 14px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    }
+
+    .delete-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: .5rem;
+        color: #d9534f;
+    }
+
+    .subtitle {
+        font-size: .95rem;
+        color: #666;
+        margin-bottom: 1.3rem;
+    }
+
+    blockquote {
+        background: #fafafa;
+        padding: 1rem 1.2rem;
+        border-left: 4px solid #d9534f;
+        border-radius: 8px;
+        font-size: .95rem;
+        color: #444;
+        margin: 1rem 0 1.5rem 0;
+    }
+
+    /* Buttons */
+    .btn-delete {
+        background: #d9534f;
+        color: #fff;
+        padding: 0.75rem 1.6rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+    .btn-delete:hover {
+        background: #c94743;
+    }
+
+    .btn-cancel {
+        background: #f1f1f5;
+        color: #444;
+        padding: 0.75rem 1.4rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-left: .6rem;
+        transition: 0.2s ease;
+        display: inline-block;
+    }
+    .btn-cancel:hover {
+        background: #e4e4eb;
+        color: #222;
+        text-decoration: none;
+    }
+
+    .button-row {
+        margin-top: 1.4rem;
+    }
+
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-    <h2>Confirm Delete</h2>
-    <p>Are you sure you want to delete the following post(s)? </p>
+<div class="delete-container">
+
+    <h2 class="delete-title">Confirm Deletion</h2>
+    <p class="subtitle">This action is permanent. Deleted posts cannot be recovered.</p>
+
+    <p><strong>Post Preview:</strong></p>
     <blockquote>{{ post.content| linebreaksbr }}</blockquote>
     <form method="post">
         {% csrf_token %}
-        <button type="submit">Yes, Delete.</button>
-        <button><a href="{% url 'forum:forum_topic_detail' post.topic.id %}">No, Cancel</a></button>
+
+        <div class="button-row">
+            <button type="submit" class="btn-delete">Yes, Delete.</button>
+            <a href="{% url 'forum:forum_topic_detail' post.topic.id %}" class="btn-cancel">No, Cancel</a>
+        </div>
     </form>
+
+</div>
+
 
 {% endblock %}
