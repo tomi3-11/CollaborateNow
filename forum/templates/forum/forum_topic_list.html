@@ -9,85 +9,11 @@ Community Forum - CollaborateNow
 {% block style %}
 
 <style>
-
-    /* body {
-        background: #f9f9fb;
-        font-family: "Inter", sans-serif;
-    }
-
-    .category {
-        background: rgb(113, 45, 192);
-        border-radius: 3rem;
-        padding: 0 10px;
-        width: fit-content;
-        color: #fff;
-        font-size: 0.8rem;
-    }
-
-    #Search {
-        width: 100%;
-    }
-
-    .SearchForm {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .SearchForm input[type="text"] {
-        width: 100%;
-        border-radius: 10px;
-        border: 1px solid #ddd;
-        padding: 0.7rem 1rem;
-    }
-
-    .SearchForm input[type="submit"] {
-        display: none;
-    }
-
-    .Forum-title {
-        font-weight: 700;
-        font-size: 1.8rem;
-    }
-    .card-top {
-        display: flex;
-        justify-content: start;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .header-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-        padding: 1rem 0;
-        margin-bottom: 1.5rem;
-    }
-
-
-    
-    .button-create {
-        text-align: right;
-    }
-
-    .button-create .btn {
-        display: inline-block;
-    } */
-
-
-
-
     body {
         background: #f9f9fb;
         font-family: "Inter", sans-serif;
-    }
-
-    .Forum-title {
-        font-weight: 700;
-        font-size: 1.8rem;
+        margin: 0;
+        padding: 0;
     }
 
     .header-content {
@@ -95,12 +21,43 @@ Community Forum - CollaborateNow
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
+        margin-bottom: 2rem;
+    }
+
+    .Forum-title {
+        font-weight: 700;
+        font-size: 1.9rem;
+        color: #333;
+        margin-bottom: 0.3rem;
+    }
+
+    .forum-text {
+        font-size: 0.95rem;
+        color: #666;
+    }
+
+    .button-create a {
+        display: inline-block;
+        padding: 0.6rem 1.2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: #6a5acd;
+        color: #fff;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    /* .button-create a:hover {
+        background: #5a4cc1;
+    } */
+
+    .SearchForm {
+        display: flex;
         margin-bottom: 1.5rem;
     }
 
-    /* Search bar */
     .SearchForm input[type="text"] {
-        width: 100%;
+        flex: 1;
         border-radius: 10px;
         border: 1px solid #ddd;
         padding: 0.7rem 1rem;
@@ -110,67 +67,129 @@ Community Forum - CollaborateNow
         display: none;
     }
 
-    /* Discussion card */
     .discussion-card {
         background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        padding: 1.5rem 1.7rem;
+        border-radius: 14px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        padding: 1.5rem 1.8rem;
         margin-bottom: 1rem;
+        transition: transform 0.2s ease;
+    }
+
+    .discussion-card:hover {
+        transform: translateY(-2px);
     }
 
     .discussion-meta {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap; 
+        gap: 0.5rem;
     }
 
-    .discussion-category {
+    .meta-left {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        flex: 1; 
+        min-width: 0;
+    }
+
+    /* .discussion-category {
         display: inline-block;
         padding: 0 0.6rem;
         border-radius: 18px;
         font-size: 0.75rem;
         font-weight: 600;
-        color: #ffffff;
+        color: #fff;
+    } */
+
+    .discussion-category {
+        display: inline-block;
+        padding: 0.2rem 0.5rem;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: #fff;
+        background: linear-gradient(135deg, #6a5acd, #4b7bec); /* Blue-purple gradient */
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        
+        max-width: 100%;     
+        white-space: nowrap; 
+        overflow: hidden;    
+        text-overflow: ellipsis;
+    }
+
+    .discussion-category:hover {
+        background: linear-gradient(135deg, #4b7bec, #6a5acd);
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        cursor: pointer;
+    }
+
+
+    .category-Technology {
         background: #6a5acd;
     }
 
-    .category-Technology { background: #6a5acd; }
-    .category-Design { background: #3cb371; }
-    .category-Career { background: #dc3545; }
+    .category-Design {
+        background: #3cb371;
+    }
+
+    .category-Career {
+        background: #dc3545;
+    }
 
     .discussion-title {
-        font-size: 1.1rem;
+        font-size: 1.15rem;
         font-weight: 600;
-        margin: 0.6rem 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .discussion-title a {
+        text-decoration: none;
+        color: #333;
+    }
+
+    .discussion-title a:hover {
+        color: #6a5acd;
+    }
+
+    .discussion-description {
+        font-size: 0.95rem;
+        color: #555;
+        margin-bottom: 0.7rem;
     }
 
     .discussion-footer {
         display: flex;
         justify-content: space-between;
-        align-items: center;
         font-size: 0.85rem;
         color: #666;
     }
 
     .discussion-stats {
         display: flex;
-        justify-content: center;
         align-items: center;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        gap: 1rem;
     }
 
-    .discussion-stats span {
-        margin-left: 0.5rem;
+    .discussion-stats i {
+        margin-right: 0.3rem;
     }
 
     /* Sidebar */
     .sidebar-card {
         background: #fff;
-        border-radius: 12px;
-        padding: 1rem 1.2rem;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-        margin-bottom: 1rem;
+        border-radius: 14px;
+        padding: 1.2rem 1.4rem;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.2rem;
     }
 
     .sidebar-card h5 {
@@ -217,16 +236,39 @@ Community Forum - CollaborateNow
         margin: 0;
     }
 
-    .meta-left {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 1rem;
+    /* Responsive layout */
+    @media (max-width: 992px) {
+        .header-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .button-create {
+            text-align: left;
+        }
     }
 
+    @media (max-width: 768px) {
+        .discussion-card {
+            padding: 1.2rem 1.4rem;
+        }
 
+        .sidebar-card {
+            padding: 1rem 1.2rem;
+        }
+    }
 
+    @media (max-width: 576px) {
+        .discussion-meta {
+            flex-direction: column; 
+            align-items: flex-start;
+        }
 
+        .discussion-category {
+            max-width: 100%;
+            white-space: normal;
+        }
+    }
 </style>
 
 {% endblock %}
@@ -240,171 +282,124 @@ Community Forum - CollaborateNow
             Learn, Share knowledge, and connect with peers across different domains.
         </p>
     </div>
-    
+
     <div class="button-create">
         <!-- Create a new Button Functionality -->
         {% if user.is_authenticated %}
-        <p><a class="btn btn-info" href="{% url 'forum:create_topic' %}"><i class="fa fa-plus"></i> New Topic</a></p>
+            <a class="btn btn-info" href="{% url 'forum:create_topic' %}"><i class="fa fa-plus"></i> New Topic</a>
         {% else %}
-        <p>Please <a href="{% url 'accounts:login' %}">Log in</a> to start a new topic to participate in discussions.</p>
+            <p>Please <a href="{% url 'accounts:login' %}">Log in</a> to start a new topic</p>
         {% endif %}
     </div>
 </div>
 
 
 <!-- <div class="container-fluid"> -->
-    <div class="row">
-        <!-- Topics Section -->
-        <div class="col-lg-8">
-            <!-- Search Bar -->
-            <form class="SearchForm" action="{% url 'forum:forum_search' %}" method="get">
-                <!-- <label for="Search"><i class="fa-solid fa-magnifying-glass"></i></label> -->
-                <input type="text" id="Search" class="form-control" name="q" placeholder="Search topics...">
-                <input type="submit" value="Search" class="btn btn-success">
-            </form>
-            <br>
-        
-            <!-- Listing the new Topics -->
-             <!-- <div class="container-fluid">
-                <div class="row">
-                {% if topics %}
-                    <ul style="list-style-type: none;">
-                        {% for topic in topics %}
-                            <li>
-                                <div class="col">
-                                    <div class="card mb-3" style="width: 100%;">
-                                        <div class="card-body">
-                                            <div class="card-top">
-                                                {% if topic.category %}
-                                                    <p class="category">{{ topic.category.name }}</p>  
-                                                    <p class="created-date">{{ topic.created_at|date:"F Y" }}</p>
-                                                    {% endif %}
-                                                </div>
-                                                <h5 class="card-title">{{ topic.title }}</h5>
-                                                <h6 class="card-subtitle mb-2 text-body-secondary">
-                                                    <i class="fa-solid fa-user"></i> {{ topic.creator.username }} <i class="fa-solid fa-clock"></i> {{ topic.last_active|naturaltime }}
-                                                </h6>
-                                                <a style="text-decoration: none; color: rgb(113, 45, 192);" href="{% url 'forum:forum_topic_detail' topic.id %}">Read full discussion <i class="fa fa-circle-arrow-right"></i></a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                {% endfor %}
-                    </ul>
-                {% elif search_term %}
-                <p>No topics found mactching you search term "{{ search_term }}".</p>
-                {% else %}
-                <p>No topics have been created yet.</p>
-                {% endif %}
-            </div>
-        </div> -->
-        
-        
+<div class="row">
+    <!-- Topics Section -->
+    <div class="col-lg-8">
+        <!-- Search Bar -->
+        <form class="SearchForm" action="{% url 'forum:forum_search' %}" method="get">
+            <!-- <label for="Search"><i class="fa-solid fa-magnifying-glass"></i></label> -->
+            <input type="text" id="Search" class="form-control" name="q" placeholder="Search topics...">
+            <input type="submit" value="Search">
+        </form>
+
         {% if topics %}
-        {% for topic in topics %}
-        <div class="discussion-card">
-            <div class="discussion-meta">
-                <div class="meta-left">
-                    <p class="discussion-category category-{{ topic.category.name }}">{{ topic.category.name }}</p>
-                    <p class="created-date">{{ topic.created_at|date:"F Y" }}</p>
-                </div>
-                
-                <div class="meta-right">
-                    <div class="discussion-stats">
-                        <span><i class="fa fa-eye"></i> 24</span>
-                        <span><i class="fa fa-comments"></i> 8</span>
+            {% for topic in topics %}
+                <div class="discussion-card">
+                    <div class="discussion-meta">
+                        <div class="meta-left">
+                            <p class="discussion-category category-{{ topic.category.name }}">{{ topic.category.name }}</p>
+                            <p class="created-date">{{ topic.created_at|date:"F Y" }}</p>
+                        </div>
+
+                        <!-- <div class="meta-right">
+                            <div class="discussion-stats">
+                                <span><i class="fa fa-eye"></i> 24</span>
+                                <span><i class="fa fa-comments"></i> 8</span>
+                            </div>
+                        </div> -->
+
                     </div>
-                </div>
-            </div>
-            <div class="discussion-title">
-                <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="text-decoration:none; color:#333;">
-                    {{ topic.title }}
-                </a>
-            </div>
 
-            <div class="discussion-description text-body-secondary">
-                <p class="subtitle">
-                    {{ topic.description|linebreaksbr }}
-                </p>
-            </div>
+                    <div class="discussion-title">
+                        <a href="{% url 'forum:forum_topic_detail' topic.id %}">{{ topic.title }}</a>
+                    </div>
 
-            <div class="text-muted mb-2">
-                <i class="fa fa-user"></i> {{ topic.creator.username }}
-                <small class="text-muted">{{ topic.last_active|naturaltime }}</small>
-            </div>
-                <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="color:#6a5acd; font-size:0.9rem;">Read full discussion →</a>
-                <div class="discussion-footer mt-2">
+                    <div class="discussion-description">
+                            {{ topic.description|linebreaksbr }}
+                    </div>
+
+                    <div class="text-muted mb-2">
+                        <i class="fa fa-user"></i> {{ topic.creator.username }}
+                        <small>{{ topic.last_active|naturaltime }}</small>
+                    </div>
+
+                    <a href="{% url 'forum:forum_topic_detail' topic.id %}" style="color:#6a5acd; font-size:0.9rem;">Read fulldiscussion →</a> 
                 </div>
-            </div>
             {% endfor %}
-            {% elif search_term %}
-                <p>No discussions found for "{{ search_term }}".</p>
-            {% else %}
-                <p>No discussions yet.</p>
-            {% endif %}
+        {% elif search_term %}
+            <p>No discussions found for "{{ search_term }}".</p>
+        {% else %}
+            <p>No discussions yet.</p>
+        {% endif %}
+    </div>
 
-
-
-
-
-
-
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="sidebar-card">
+            <h5>Discussion Guidelines</h5>
+            <ul class="text-muted" style="padding-left:1rem;">
+                <li>Be respectful and constructive</li>
+                <li>Stay on topic</li>
+                <li>No self-promotion without context</li>
+                <li>Cite sources when providing information</li>
+                <li>Use appropriate tags for better visibility</li>
+            </ul>
+            <a href="#" style="color:#6a5acd;">Read full guidelines →</a>
         </div>
 
-            <!-- Sidebar -->
-            <div class="col-lg-4">
-                <div class="sidebar-card">
-                    <h5>Discussion Guidelines</h5>
-                    <ul class="text-muted" style="padding-left:1rem;">
-                        <li>Be respectful and constructive</li>
-                        <li>Stay on topic</li>
-                        <li>No self-promotion without context</li>
-                        <li>Cite sources when providing information</li>
-                        <li>Use appropriate tags for better visibility</li>
-                    </ul>
-                    <a href="#" style="color:#6a5acd;">Read full guidelines →</a>
-                </div>
+        <div class="sidebar-card">
+            <h5>Popular Tags</h5>
+            <div>
+                <span class="tag">#webdev</span>
+                <span class="tag">#javascript</span>
+                <span class="tag">#react</span>
+                <span class="tag">#uiux</span>
+                <span class="tag">#figma</span>
+                <span class="tag">#career</span>
+                <span class="tag">#portfolio</span>
+                <span class="tag">#python</span>
+                <span class="tag">#design</span>
+                <span class="tag">#ai</span>
+            </div>
+        </div>
 
-                <div class="sidebar-card">
-                    <h5>Popular Tags</h5>
-                    <div>
-                        <span class="tag">#webdev</span>
-                        <span class="tag">#javascript</span>
-                        <span class="tag">#react</span>
-                        <span class="tag">#uiux</span>
-                        <span class="tag">#figma</span>
-                        <span class="tag">#career</span>
-                        <span class="tag">#portfolio</span>
-                        <span class="tag">#python</span>
-                        <span class="tag">#design</span>
-                        <span class="tag">#ai</span>
-                    </div>
-                </div>
-
-                <div class="sidebar-card">
-                    <h5>Top Contributors</h5>
-                    <div class="contributors-details">
-                        <div class="logo">RJ</div>
-                        <div class="details">
-                            <p class="name">Riley Johnson</p>
-                            <p class="contribs">142 contributions</p>
-                        </div>
-                    </div>
-                    <div class="contributors-details">
-                        <div class="logo">SM</div>
-                        <div class="details">
-                            <p class="name">Sofia Martinez</p>
-                            <p class="contribs">118 contributions</p>
-                        </div>
-                    </div>
-                    <div class="contributors-details">
-                        <div class="logo">AC</div>
-                        <div class="details">
-                            <p class="name">Alex Chen</p>
-                            <p class="contribs">93 contributions</p>
-                        </div>
-                    </div>
+        <div class="sidebar-card">
+            <h5>Top Contributors</h5>
+            <div class="contributors-details">
+                <div class="logo">RJ</div>
+                <div class="details">
+                    <p class="name">Riley Johnson</p>
+                    <p class="contribs">142 contributions</p>
                 </div>
             </div>
+            <div class="contributors-details">
+                <div class="logo">SM</div>
+                <div class="details">
+                    <p class="name">Sofia Martinez</p>
+                    <p class="contribs">118 contributions</p>
+                </div>
+            </div>
+            <div class="contributors-details">
+                <div class="logo">AC</div>
+                <div class="details">
+                    <p class="name">Alex Chen</p>
+                    <p class="contribs">93 contributions</p>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
 {% endblock %}
