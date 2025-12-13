@@ -4,14 +4,121 @@
     Edit Post - CollaborateNow
 {% endblock %}
 
-{% block content %}
+{% block style %}
 
-    <h2>Edit Post</h2>
+<style>
+    body {
+        background: #f9f9fb;
+        font-family: "Inter", sans-serif;
+    }
+
+    .edit-container {
+        max-width: 650px;
+        margin: 2rem auto;
+        background: #fff;
+        padding: 2rem 2.5rem;
+        border-radius: 14px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+
+    .edit-title {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: .5rem;
+        color: #333;
+    }
+
+    .subtitle {
+        font-size: .9rem;
+        color: #666;
+        margin-bottom: 1.5rem;
+    }
+
+    /* Form styling */
+    .edit-container form p {
+        margin-bottom: 1.2rem;
+    }
+
+    .edit-container input,
+    .edit-container select,
+    .edit-container textarea {
+        width: 100%;
+        padding: 0.75rem;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+        font-size: .95rem;
+        outline: none;
+        background: #fafafa;
+        transition: all .2s;
+    }
+
+    .edit-container input:focus,
+    .edit-container textarea:focus,
+    .edit-container select:focus {
+        border-color: #6a5acd;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.15);
+    }
+
+    /* Buttons */
+    .btn-submit {
+        background: #6a5acd;
+        color: #fff;
+        padding: 0.75rem 1.6rem;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+    .btn-submit:hover {
+        background: #5a4cc1;
+    }
+
+    .btn-cancel {
+        background: #f1f1f5;
+        color: #444;
+        padding: 0.75rem 1.4rem;
+        border-radius: 10px;
+        font-weight: 600;
+        text-decoration: none;
+        margin-left: .6rem;
+        transition: 0.2s ease;
+        display: inline-block;
+    }
+    .btn-cancel:hover {
+        background: #e4e4eb;
+        color: #222;
+        text-decoration: none;
+    }
+
+    .button-row {
+        margin-top: 1.5rem;
+    }
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
+<div class="edit-container">
+
+    <h2 class="edit-title">Edit Your Post</h2>
+    <p class="subtitle">Update your message to clarify, improve accuracy, or fix mistakes.</p>
+
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Save Changes</button>
-        <a href="{% url 'forum:forum_topic_detail' post.topic.id %}">Cancel</a>
+
+        <div class="button-row">
+            
+            <button type="submit" class="btn-submit">Save Changes</button>
+            <a href="{% url 'forum:forum_topic_detail' post.topic.id %}" class="btn-cancel">Cancel</a>
+
+        </div>
     </form>
+
+</div>
+
 
 {% endblock %}

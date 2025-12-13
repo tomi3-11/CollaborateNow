@@ -6,29 +6,189 @@
     {{ topic.title }} - CollaborateNow
 {% endblock %}
 
+{% block style %}
+
+<style>
+
+body {
+    background: #f9f9fb;
+    font-family: "Inter", sans-serif;
+}
+
+.topic-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.topic-header {
+    background: #fff;
+    padding: 1.8rem 2rem;
+    border-radius: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    margin-bottom: 2rem;
+}
+
+.topic-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    color: #333;
+}
+
+.topic-meta {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.posts-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.post-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 1.3rem 1.5rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    margin-bottom: 1rem;
+}
+
+.post-author {
+    font-weight: 600;
+    color: #333;
+}
+
+.post-meta {
+    font-size: 0.8rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+}
+
+.post-content {
+    font-size: 0.95rem;
+    color: #444;
+    margin-bottom: 1rem;
+    white-space: pre-wrap;
+}
+
+.post-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.post-actions a {
+    text-decoration: none;
+    padding: 0.5rem 0.9rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.btn-edit {
+    background: #6a5acd;
+    color: #fff;
+}
+
+.btn-edit:hover {
+    background: #5a4cc1;
+}
+
+.btn-delete {
+    background: #d9534f;
+    color: #fff;
+}
+
+.btn-delete:hover {
+    background: #c94743;
+}
+
+.reply-section {
+    background: #fff;
+    padding: 1.8rem 2rem;
+    border-radius: 14px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    margin-top: 2rem;
+}
+
+.reply-section h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #333;
+}
+
+.reply-section button {
+    background: #6a5acd;
+    color: #fff;
+    padding: 0.7rem 1.6rem;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.reply-section button:hover {
+    background: #5a4cc1;
+}
+
+@media (max-width: 768px) {
+    .topic-header, .post-card, .reply-section {
+        padding: 1.2rem 1.5rem;
+    }
+    .topic-title {
+        font-size: 1.5rem;
+    }
+}
+
+</style>
+
+{% endblock %}
+
 {% block content %}
-    <h2>{{ topic.title }}</h2>
-    <p>Started by {{ topic.creator.username }} on {{ topic.created_at }}</p>
+
+<div class="topic-container">
+
+    <!-- Topic Header -->
+     <div class="topic-header">
+         <h2>{{ topic.title }}</h2>
+         <p>Started by {{ topic.creator.username }} on {{ topic.created_at }}</p>
+     </div>
+
     <hr>
+
+    <!-- Post Section -->
     <h3>Posts: </h3>
     {% if posts %}
-        <ul>
+        <ul class="posts-list">
             {% for post in posts %}
-                <li>
-                    <strong>{{ post.author.username }}</strong> ({{ post.created_at|clean_naturaltime }})                   
-                    {% if post.updated_at != post.created_at %}
-                        (Edited {{ post.updated_at|clean_naturaltime }})
-                    {% endif %} 
-                    <br>
-                    {{ post.content|linebreaksbr }}
-                    {% if user.is_authenticated and user == post.author %}
-                        <button><a href="{% url 'forum:edit_post' post.id %}">Edit</a></button>
-                        <button><a href="{% url 'forum:delete_post' post.id %}" onclick="return 
-                        confirm('Are you sure you want to delete this post?')">Delete</a></button>
-                    {% elif user.is_authenticated and user.is_staff %}
-                        <button><a href="{% url 'forum:delete_post' post.id %}" onclick="return 
-                        confirm('Are you sure you want to delete this post? (Admin)')">Delete (Admin)</a></button>
+                <li class="post-card">
+                    <div class="post-author">{{ post.author.username }}</div>
+                    <div class="post-meta">
+                        {{ post.created_at|clean_naturaltime }}
+                        {% if post.updated_at != post.created_at %}
+                            (Edited {{ post.updated_at|clean_naturaltime }})
+                        {% endif %} 
+                    </div>
+
+                    <div class="post-content">{{ post.content|linebreaksbr }}</div>
+                    
+                    {% if user.is_authenticated %}
+                    <div class="post-actions">
+                        {% if user == post.author %}
+                            <a href="{% url 'forum:edit_post' post.id %}" class="btn-edit">Edit</a>
+                            <a href="{% url 'forum:delete_post' post.id %}" class="btn-delete" 
+                            onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
+                        {% elif user.is_staff %}
+                            <a href="{% url 'forum:delete_post' post.id %}" class="btn-delete" 
+                            onclick="return confirm('Are you sure you want to delete this post? (Admin)')">Delete (Admin)</a>
+                        {% endif %}
+                    </div>
                     {% endif %}
+
                 </li>
             {% endfor %}
         </ul>
@@ -37,13 +197,21 @@
     {% endif %}
 
     {% if user.is_authenticated %}
+    <div class="reply-section">
         <h3>Reply to this topic: </h3>
         <form method="post" action="{% url 'forum:create_post' topic.id %}">
             {% csrf_token %}
             {{ post_form.as_p }}
+
+            {{ form.content.label_tag }}
+            {{ form.content }}
             <button type="submit">Post Reply</button>
         </form>
+    </div>
     {% else %}
         <p>Please <a href="{% url 'accounts:login' %}">Log in</a> to reply to this topic.</p>
     {% endif %}
+
+</div>
+
 {% endblock %} 
